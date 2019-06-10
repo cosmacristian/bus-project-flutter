@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'list.dart';
 import 'maps.dart';
 
-class Buslist extends StatefulWidget{
+class Buslist extends StatefulWidget{// minimal refactoring
   @override
   _BusListActionListener createState() => new _BusListActionListener();
 }
@@ -29,6 +29,7 @@ class _BusListActionListener extends State<Buslist>{
 class EachList extends StatelessWidget{
   GlobalKey<ScaffoldState> _Card = GlobalKey<ScaffoldState>();
   final String name;
+  final String addr="3d";/// adawdgdg
   EachList(this.name);
 
   @override
