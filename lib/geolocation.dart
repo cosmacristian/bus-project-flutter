@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
+import 'communication.dart';
 
 Position userLocation;
 Geolocator geolocator = Geolocator();
+String MyBusId;
 
 class GeoListenPage extends StatefulWidget {
   @override
@@ -17,6 +19,18 @@ class _GeoListenPageState extends State<GeoListenPage> {
     super.initState();
     _getLocation().then((position) {
       userLocation = position;
+    });
+    geolocator
+        .getPositionStream(LocationOptions(
+        accuracy: LocationAccuracy.best, timeInterval: 60000))
+        .listen((position) {
+      userLocation = position;
+      print(userLocation);
+      if(MyBusId != null){
+        var post = {'BusId':MyBusId,'Actual_Latitude':userLocation.latitude,'Actual_Longitude':userLocation.longitude};
+        print(post);
+        PostBusInformation(post);
+      }
     });
   }
 
@@ -49,6 +63,27 @@ class _GeoListenPageState extends State<GeoListenPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
+            ),
+            MyBusId == null
+                ? Text("Please select the bus you are traveling with:")
+                : Text("Your bus is:" + MyBusId),
+            new DropdownButton<String>(
+              value: 'Off',
+              items: <String>['Off','26', '27', '44'].map((String value) {
+                return new DropdownMenuItem<String>(
+                  value: value,
+                  child: new Text(value),
+                );
+              }).toList(),
+              onChanged: (newVal) {
+                setState(() {
+                  if(newVal == 'Off'){
+                    MyBusId = null;
+                  }else{
+                    MyBusId = newVal;
+                  }
+                });
+              },
             ),
           ],
         ),
