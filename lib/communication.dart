@@ -122,7 +122,7 @@ class Bus {
   factory Bus.fromJson(Map<String, dynamic> json){
     return new Bus(
         BusId: json['BusId'].toString(),
-        BusName: json['BusId'].toString(), /// <<-- CHANGE THIS WHEN THE NAME WILL BE ADDED
+        BusName: json['BusName'].toString(),
         Actual_Longitude: json['Actual_Longitude'].toDouble(),
         Actual_Latitude: json['Actual_Latitude'].toDouble(),
         Measurement_Timestamp : json['Measurement_Timestamp'].toString()

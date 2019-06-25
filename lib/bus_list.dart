@@ -49,7 +49,7 @@ class _BusListActionListener extends  State<Buslist1>{
         itemBuilder: (context, index){
           return ListTile(
             leading: new CircleAvatar(child: new Text(bus_list.elementAt(index).BusId)),
-            title: Text(bus_list.elementAt(index).Actual_Longitude.toString()),
+            title: Text(bus_list.elementAt(index).BusName),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: (){
               print("Rovid gomb nyomas");

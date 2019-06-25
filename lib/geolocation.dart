@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'communication.dart';
+import 'list.dart';
 
 Position userLocation;
 Geolocator geolocator = Geolocator();
@@ -27,7 +28,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
       userLocation = position;
       print(userLocation);
       if(MyBusId != null){
-        var post = {'BusId':MyBusId,'Actual_Latitude':userLocation.latitude,'Actual_Longitude':userLocation.longitude};
+        var post = {'BusId':MyBusId,'BusName': bus_list.singleWhere((o) => o.BusId == MyBusId, orElse: () => new Bus()).BusName,'Actual_Latitude':userLocation.latitude,'Actual_Longitude':userLocation.longitude};
         print(post);
         PostBusInformation(post);
       }
@@ -36,6 +37,16 @@ class _GeoListenPageState extends State<GeoListenPage> {
 
   @override
   Widget build(BuildContext context) {
+    var list = bus_list.map((var value) {
+      return new DropdownMenuItem<String>(
+        value: value.BusId,
+        child: new Text(value.BusId),
+      );
+    }).toList();
+    list.add( new DropdownMenuItem<String>(
+      value: 'Off',
+      child: new Text('Off'),
+    ));
     return Scaffold(
       body: Center(
         child: Column(
@@ -68,13 +79,8 @@ class _GeoListenPageState extends State<GeoListenPage> {
                 ? Text("Please select the bus you are traveling with:")
                 : Text("Your bus is:" + MyBusId),
             new DropdownButton<String>(
-              value: 'Off',
-              items: <String>['Off','26', '27', '44'].map((String value) {
-                return new DropdownMenuItem<String>(
-                  value: value,
-                  child: new Text(value),
-                );
-              }).toList(),
+              value: MyBusId == null ? 'Off' : MyBusId,
+              items: list.reversed.toList(),
               onChanged: (newVal) {
                 setState(() {
                   if(newVal == 'Off'){
