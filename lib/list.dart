@@ -3,8 +3,9 @@ import 'communication.dart';
 
 List<Bus> bus_list;
 List<Station> station_list;
+List<Line> line_list;
 int bus_list_size;
-
+Duration ServerClientDifference=null;
 
 /*
 Map<int, String> list_map(){

@@ -7,11 +7,11 @@ import 'dart:async';
 
 Future<DateTime> Syncronization() async {
   final response =
-  await http.get('http://192.168.1.101:8080/WCFService/Service1/web/Syncronization');
+  await http.get('http://193.226.0.198:5210/WCFService/Service1/web/Syncronization');/// Not WORKING CHECK LATER...
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
-    var actualtime = DateTime.parse((json.decode(response.body) as String)+"Z");
+    DateTime actualtime = DateTime.parse(json.decode(response.body) as String);
     print(actualtime.toString());
     return actualtime;
   } else {
@@ -22,7 +22,7 @@ Future<DateTime> Syncronization() async {
 
 Future<BusListPost> GetBusInformation() async {
   final response =
-  await http.get("http://192.168.1.101:8080/WCFService/Service1/web/GetBusInformation");//'https://jsonplaceholder.typicode.com/posts/1');
+  await http.get("http://193.226.0.198:5210/WCFService/Service1/web/GetBusInformation");//'https://jsonplaceholder.typicode.com/posts/1');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON
@@ -35,9 +35,24 @@ Future<BusListPost> GetBusInformation() async {
   }
 }
 
+Future<LineListPost> GetLinesList() async {
+  final response =
+  await http.get("http://193.226.0.198:5210/WCFService/Service1/web/GetLinesList");
+
+  if (response.statusCode == 200) {
+    // If the call to the server was successful, parse the JSON
+    var temp = LineListPost.fromJson(json.decode(response.body));
+    temp.LineList.forEach((f)=> print(f.toString()));
+    return temp;
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
 Future<StationListPost> GetStationsList() async {
   final response =
-  await http.get("http://192.168.1.101:8080/WCFService/Service1/web/GetStationsList");
+  await http.get("http://193.226.0.198:5210/WCFService/Service1/web/GetStationsList");
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON
@@ -51,7 +66,20 @@ Future<StationListPost> GetStationsList() async {
 }
 
 void PostBusInformation(Map body) async {
-  return http.post("http://192.168.1.101:8080/WCFService/Service1/web/PostBusInformation"/*"https://ptsv2.com/t/15kcv-1561457757/post"*/,headers: {"Content-Type": "application/json"}, body: json.encode(body)).then((http.Response response) {
+  return http.post("http://193.226.0.198:5210/WCFService/Service1/web/PostBusInformation"/*"https://ptsv2.com/t/15kcv-1561457757/post"*/,headers: {"Content-Type": "application/json"}, body: json.encode(body)).then((http.Response response) {
+    final int statusCode = response.statusCode;
+
+    if (statusCode < 200 || statusCode > 400 || json == null) {
+      throw new Exception("Error while posting data");
+    }
+    //print("Success!!!!");
+    return;
+  });
+}
+
+
+void PostBusInformationTest(Map body) async {
+  return http.post("http://193.226.0.198:5210/WCFService/Service1/web/PostBusMeasurement",headers: {"Content-Type": "application/json"}, body: json.encode(body)).then((http.Response response) {
     final int statusCode = response.statusCode;
 
     if (statusCode < 200 || statusCode > 400 || json == null) {
@@ -110,6 +138,74 @@ void GetList() async {
   socket.close();
 }
 ////////////////////////////////////////MODELS (PUT THESE ELSEWHERE)////////
+class LineListPost {
+  final List<Line> LineList;
+
+  LineListPost({
+    this.LineList,
+  });
+
+
+  factory LineListPost.fromJson(List<dynamic> parsedJson) {
+
+    List<Line> lns = new List<Line>();
+    for(int i=0;i<parsedJson.length;i++){
+      lns.add(Line.fromJson(parsedJson.elementAt(i)));
+    }
+
+    //buses = parsedJson.map((i) => Bus.fromJson(i)).toList();
+
+    return new LineListPost(
+      LineList: lns,
+    );
+  }
+
+}
+
+class Line{
+  int LineID;
+  List<entry> Stations;
+
+  Line({this.LineID,this.Stations});
+
+  factory Line.fromJson(Map<String, dynamic> json){
+    List<entry> ets = new List<entry>();
+    for(int i=0;i<json['Stations'].length;i++){
+      ets.add(entry.fromJson(json['Stations'].elementAt(i)));
+    }
+    return new Line(
+        LineID: json['LineID'],
+        Stations: ets
+    );
+  }
+
+  @override
+  String toString() {
+    return LineID.toString()+"  "+Stations.toString();
+  }
+}
+
+class entry{
+  int StationID;
+  int StationNr;
+
+  entry({this.StationID,this.StationNr});
+
+  factory entry.fromJson(Map<String, dynamic> json){
+    return new entry(
+        StationID: json['StationID'],
+        StationNr: json['StationNr']
+    );
+  }
+
+  @override
+  String toString() {
+    return StationID.toString()+"  "+StationNr.toString();
+  }
+}
+
+
+
 class Bus {
   String BusId;
   String BusName;

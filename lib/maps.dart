@@ -3,20 +3,32 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'bus_list.dart';
 import 'communication.dart';
 import 'geolocation.dart';
 import 'list.dart';
+import 'package:flutter/scheduler.dart';
 
 class Maps extends StatefulWidget{
+  Todo todo;
   @override
-  Maps_flutter createState() => new Maps_flutter();
+  Maps_flutter createState() => new Maps_flutter(todo);
+
+  Maps([Todo this.todo = null]);
 }
 
 class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
+  Todo todo;
   List<Marker> markers;
+  List<Polyline> polylines;
   Timer _timer;
   MapController mapController;
   int selectedLayer=0;
+  bool toggleBus = false;
+  bool toggleStation = false;
+  bool toggleLine = false;
+
+  Maps_flutter([Todo this.todo = null]);
 
   @override
   void initState() {
@@ -27,6 +39,13 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
             station_list = val.StationList
       );
     }
+    if(line_list == null) {
+      GetLinesList().then((val) =>
+            line_list = val.LineList
+      );
+    }
+    if(todo != null)
+      SchedulerBinding.instance.addPostFrameCallback((_) => _animatedMapMove(LatLng(todo.Actual_Latitude, todo.Actual_Longitude), 17.0));
   }
 
   LayerOptions SwitchLayers(){
@@ -49,14 +68,59 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
         _timer = null;
       }
       markers = StationMarkers();
+    }else if(selectedLayer == 2){
+      print("LAYER SELECTED >> STATIONS");
+      if(_timer != null){
+        _timer.cancel();
+        _timer = null;
+      }
+      polylines = new List<Polyline>();
+      markers = null;
+      polylines.add(LinesDrawer());
     }
     if(markers != null) {
       return new MarkerLayerOptions(markers: markers);
     }else{
-      return new MarkerLayerOptions(markers: new List<Marker>());
+      return new PolylineLayerOptions(polylines: polylines);
     }
   }
 
+  Polyline LinesDrawer() {
+    Polyline temp2;
+    List<LatLng> temp3;
+    if (station_list != null || line_list != null) {
+      temp3 = line_list.first.Stations.map((sta) {
+        //Station act = station_list.singleWhere((o) =>
+        //o.StationId == sta.StationID, orElse: () => null);
+        var act = station_list.where((o) => o.StationId == sta.StationID.toString());
+        if(act.isEmpty == true) return null;
+        return new LatLng(act.first.Latitude, act.first.Longitude);
+      }).toList();
+    }
+    print(temp3);
+    temp3.removeWhere((value) => value == null);
+    print(temp3);
+    return Polyline(
+        points: temp3,
+        strokeWidth: 4.0,
+        color: Colors.purple);
+  }
+/*
+      if (userLocation != null) {
+        temp2.add(new Marker (
+          width: 30.0,
+          height: 30.0,
+          point: new LatLng(
+              double.parse(latitude()), double.parse(longitude())),
+          builder: (ctx) =>
+          new Container(
+            child: FlutterLogo(),
+          ),
+        ));
+      }
+    }
+    return temp2;
+  }*/
 
   List<Marker> UpdateMarkers() {
     List<Marker> temp2;
@@ -70,7 +134,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
           builder: (ctx) =>
               Container(
                 key: Key('purple'),
-                child: FlutterLogo(),
+                child: FlutterLogo(colors: Colors.purple),
               ),
         );
       }).toList();
@@ -104,7 +168,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
           builder: (ctx) =>
               Container(
                 key: Key('green'),
-                child: FlutterLogo(),
+                child: FlutterLogo(colors: Colors.green),
               ),
         );
       }).toList();
@@ -185,42 +249,67 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
           child: Column(
               children: [
           Padding(
-          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-          child: Row(
+          padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              MaterialButton(
+          new SizedBox(
+          width: 80.0,
+            child:RaisedButton(
                 child: Text('Buses'),
+                highlightColor: Color(0xFF42A5F5),
+              color: toggleBus ? Colors.blue : Colors.white70,
                 onPressed: () {
                   print("Buses Pressed");
                   setState(() {
                     selectedLayer = 0;
+                    toggleBus = true;
+                    toggleStation = false;
+                    toggleLine = false;
                   });
                 },
               ),
-              MaterialButton(
+          ),
+            new SizedBox(
+              width: 84.0,
+              child:RaisedButton(
                 child: Text('Stations'),
+                highlightColor: Color(0xFF42A5F5),
+                color: toggleStation ? Colors.blue : Colors.white70,
                 onPressed: () {
                   print("Stations Pressed");//_animatedMapMove(LatLng(51.5, -0.09), 5.0);
                   setState(() {
                     selectedLayer = 1;
+                    toggleBus = false;
+                    toggleStation = true;
+                    toggleLine = false;
                   });
                 },
               ),
-              MaterialButton(
+            ),
+            new SizedBox(
+              width: 80.0,
+              child:RaisedButton(
                 child: Text('Lines'),
+                highlightColor: Color(0xFF42A5F5),
+                color: toggleLine ? Colors.blue : Colors.white70,
                 onPressed: () {
                   print("Lines Pressed");//_animatedMapMove(LatLng(51.5, -0.09), 5.0);
+                  setState(() {
+                    selectedLayer = 2;
+                    toggleBus = false;
+                    toggleStation = false;
+                    toggleLine = true;
+                  });
                 },
               ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-          child: Row(
-            children: <Widget>[
-              MaterialButton(
-                child: Text('Fit Bounds'),
+            ),
+          new SizedBox(
+          width: 80.0,
+          child:RaisedButton(
+                child: Text('Center'),
+                highlightColor: Color(0xFF42A5F5),
+                color: Colors.white70,
                 onPressed: () {
                   var bounds = LatLngBounds();
                   bounds.extend(LatLng(double.parse(latitude()), double.parse(longitude())));
@@ -232,6 +321,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
                   );
                 },
               ),
+          ),
             ],
           ),
         ),

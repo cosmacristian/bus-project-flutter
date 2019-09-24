@@ -3,6 +3,15 @@ import 'list.dart';
 import 'maps.dart';
 import 'communication.dart';
 
+class Todo {
+  String BusId;
+  double Actual_Latitude;
+  double Actual_Longitude;
+
+  Todo(this.BusId, this.Actual_Latitude,this.Actual_Longitude);
+}
+
+
 class Buslist1 extends StatefulWidget{
   @override
   _BusListActionListener createState() => new _BusListActionListener();
@@ -35,6 +44,13 @@ class _BusListActionListener extends  State<Buslist1>{
           })
       );
     }
+    if(ServerClientDifference == null){
+      Syncronization().then((serverTime) {
+        print(serverTime);
+        ServerClientDifference = DateTime.now().difference(serverTime);//I guess this doesn't need refresh so...
+        print(ServerClientDifference);
+      });
+    }
     return bus_list == null
         ? Scaffold(
             body: Center(
@@ -56,6 +72,13 @@ class _BusListActionListener extends  State<Buslist1>{
             },
             onLongPress: (){
               print("Hosszu gomb nyomas");
+              Todo coords = Todo(bus_list.elementAt(index).BusId,bus_list.elementAt(index).Actual_Latitude,bus_list.elementAt(index).Actual_Longitude);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Maps(coords),
+                ),
+              );
             },
           );
         },

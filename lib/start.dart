@@ -28,7 +28,7 @@ class _newBar extends State<start> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(title: Text('BusApp'), bottom: TabBar(controller: tabController, tabs: [
+      appBar: AppBar(title: Text('Where is my bus?'), bottom: TabBar(controller: tabController, tabs: [
         Text('Station'),
         Text('Maps'),
         Text('Settings'),
