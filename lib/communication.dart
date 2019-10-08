@@ -65,6 +65,21 @@ Future<StationListPost> GetStationsList() async {
   }
 }
 
+Future<TimetableListPost> GetTimetable() async {
+  final response =
+  await http.get("http://193.226.0.198:5210/WCFService/Service1/web/GetTimetable");
+
+  if (response.statusCode == 200) {
+    // If the call to the server was successful, parse the JSON
+    var temp = TimetableListPost.fromJson(json.decode(response.body));
+    //temp.TimetableList.forEach((f)=> print(f.toString()));
+    return temp;
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
 void PostBusInformation(Map body) async {
   return http.post("http://193.226.0.198:5210/WCFService/Service1/web/PostBusInformation"/*"https://ptsv2.com/t/15kcv-1561457757/post"*/,headers: {"Content-Type": "application/json"}, body: json.encode(body)).then((http.Response response) {
     final int statusCode = response.statusCode;
@@ -99,6 +114,21 @@ Future<Post> createPost(String url, {Map body}) async {
     }
     return Post.fromJson(json.decode(response.body));
   });
+}
+
+Future<ArrivalTimeListPost> GetTimeList(int StationID) async {
+  final response =
+  await http.get("http://193.226.0.198:5210/WCFService/Service1/web/GetTimeList?StationID="+StationID.toString());
+
+  if (response.statusCode == 200) {
+    // If the call to the server was successful, parse the JSON
+    var temp = ArrivalTimeListPost.fromJson(json.decode(response.body));
+    temp.ArrivalTimeList.forEach((f)=> print(f.toString()));
+    return temp;
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
 }
 
 class Post {
@@ -320,3 +350,111 @@ class StationListPost {
 
 }
 
+
+class ArrivalTime {
+  String busID;
+  String TheTimeString;
+  String requiredTime;
+
+  ArrivalTime({this.busID,this.TheTimeString,this.requiredTime});
+
+  factory ArrivalTime.fromJson(Map<String, dynamic> json){
+    return new ArrivalTime(
+        busID: json['busID'].toString(),
+        TheTimeString: json['TheTimeString'].toString(),
+        requiredTime: json['requiredTime'].toString()
+    );
+  }
+
+  @override
+  String toString() {
+    return busID+" will arrive in : "+TheTimeString+"\n";
+  }
+}
+
+class ArrivalTimeListPost {
+  final List<ArrivalTime> ArrivalTimeList;
+
+  ArrivalTimeListPost({
+    this.ArrivalTimeList,
+  });
+
+/*
+  factory BusListPost.fromJson(Map<String, dynamic> json) {
+    List<Bus> buses = new List<Bus>();
+    //buses = json.map((i)=>Bus.fromJson(i)).toList();
+    buses=json.map((i) => Bus.fromJson(i)).toList();
+    return new BusListPost(
+        BusList: buses
+    );
+  }*/
+
+  factory ArrivalTimeListPost.fromJson(List<dynamic> parsedJson) {
+
+    List<ArrivalTime> ArrivalTimes = new List<ArrivalTime>();
+    for(int i=0;i<parsedJson.length;i++){
+      ArrivalTimes.add(ArrivalTime.fromJson(parsedJson.elementAt(i)));
+    }
+
+    //buses = parsedJson.map((i) => Bus.fromJson(i)).toList();
+
+    return new ArrivalTimeListPost(
+      ArrivalTimeList: ArrivalTimes,
+    );
+  }
+
+}
+
+class Timetable {
+  String busNr;
+  String startTime;
+  String stationID;
+
+  Timetable({this.busNr,this.startTime,this.stationID});
+
+  factory Timetable.fromJson(Map<String, dynamic> json){
+    return new Timetable(
+        busNr: json['busNr'].toString(),
+        startTime: json['startTime'].toString(),
+        stationID: json['stationID'].toString()
+    );
+  }
+
+  @override
+  String toString() {
+    return busNr+" will start : "+startTime+" from "+stationID+"\n";
+  }
+}
+
+class TimetableListPost {
+  final List<Timetable> TimetableList;
+
+  TimetableListPost({
+    this.TimetableList,
+  });
+
+/*
+  factory BusListPost.fromJson(Map<String, dynamic> json) {
+    List<Bus> buses = new List<Bus>();
+    //buses = json.map((i)=>Bus.fromJson(i)).toList();
+    buses=json.map((i) => Bus.fromJson(i)).toList();
+    return new BusListPost(
+        BusList: buses
+    );
+  }*/
+
+  factory TimetableListPost.fromJson(List<dynamic> parsedJson) {
+
+    List<Timetable> Timetables = new List<Timetable>();
+    for(int i=0;i<parsedJson.length;i++){
+      Timetables.add(Timetable.fromJson(parsedJson.elementAt(i)));
+    }
+
+    //buses = parsedJson.map((i) => Bus.fromJson(i)).toList();
+
+    return new TimetableListPost(
+      TimetableList: Timetables,
+    );
+  }
+
+}

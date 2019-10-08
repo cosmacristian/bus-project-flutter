@@ -4,6 +4,8 @@ import 'communication.dart';
 List<Bus> bus_list;
 List<Station> station_list;
 List<Line> line_list;
+List<ArrivalTime> arrivaltime_list;
+List<Timetable> timetable;
 int bus_list_size;
 Duration ServerClientDifference=null;
 
