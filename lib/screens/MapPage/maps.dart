@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'bus_list.dart';
-import 'communication.dart';
-import 'geolocation.dart';
-import 'list.dart';
+import 'package:bus_project/screens/BusListPage/bus_list.dart';
+import 'package:bus_project/services/communication.dart';
+import 'package:bus_project/screens/SettingsPage/geolocation.dart';
+import 'package:bus_project/screens/Shared//list.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'package:bus_project/models/Bus.dart';
 
 class Maps extends StatefulWidget{
   Todo todo;
@@ -21,6 +23,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
   Todo todo;
   List<Marker> markers;
   List<Polyline> polylines;
+  List<CircleMarker> circleMarkers;
   Timer _timer;
   MapController mapController;
   int selectedLayer=0;
@@ -28,27 +31,22 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
   bool toggleStation = false;
   bool toggleLine = false;
 
+
   Maps_flutter([Todo this.todo = null]);
 
   @override
   void initState() {
     super.initState();
-    mapController = MapController();
-    if(station_list == null) {
-      GetStationsList().then((val) =>
-            station_list = val.StationList
-      );
-    }
-    if(line_list == null) {
-      GetLinesList().then((val) =>
-            line_list = val.LineList
-      );
-    }
+    GeoPosition.getLocation();
     if(todo != null)
       SchedulerBinding.instance.addPostFrameCallback((_) => _animatedMapMove(LatLng(todo.Actual_Latitude, todo.Actual_Longitude), 17.0));
+
+    if(circleMarkers == null)
+      circleMarkers = List<CircleMarker>();
   }
 
   LayerOptions SwitchLayers(){
+    circleMarkers.clear();         //<-This might be dangerous...
     if(selectedLayer == 0){
       print("LAYER SELECTED >> BUSES");
       markers = UpdateMarkers();
@@ -56,6 +54,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
         _timer = Timer.periodic(Duration(seconds: 30), (_) async {
           BusListPost temp = await GetBusInformation();
           bus_list = temp.BusList;
+          circleMarkers.clear();
           setState(() {
             markers = UpdateMarkers();/// kETSZER HIVODIK MEG MAJD VEDD KI EZT MERT UGY IS MEG CSINALJA
           });
@@ -139,19 +138,27 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
         );
       }).toList();
 
-      if (userLocation != null) {
+      if (GeoPosition.userLocation != null) {
         /// SET TIMER IF THERE IS A USER LOCATION
         print("UPDATEMARKERS 22222222");
         temp2.add(new Marker (
           width: 30.0,
           height: 30.0,
-          point: new LatLng(
-              double.parse(latitude()), double.parse(longitude())),
+          point: new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),
+              /*double.parse(latitude()), double.parse(longitude())),*/
           builder: (ctx) =>
           new Container(
             child: FlutterLogo(),
           ),
         ));
+        circleMarkers = <CircleMarker>[
+          CircleMarker(
+              point: new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),
+              color: Colors.blue.withOpacity(0.4),
+              useRadiusInMeter: true,
+              radius: (range*1000) // 2000 meters | 2 km
+          ),
+        ];
       }
     }
     return temp2;
@@ -173,17 +180,24 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
         );
       }).toList();
 
-      if (userLocation != null) {
+      if (GeoPosition.userLocation != null) {
         temp2.add(new Marker (
           width: 30.0,
           height: 30.0,
-          point: new LatLng(
-              double.parse(latitude()), double.parse(longitude())),
+          point: new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),
           builder: (ctx) =>
           new Container(
             child: FlutterLogo(),
           ),
         ));
+        circleMarkers = <CircleMarker>[
+          CircleMarker(
+              point: new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),
+              color: Colors.blue.withOpacity(0.4),
+              useRadiusInMeter: true,
+              radius: (range*1000) // 2000 meters | 2 km
+          ),
+        ];
       }
     }
     return temp2;
@@ -234,7 +248,8 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context){
-    return (userLocation == null)
+    currentContext = context;
+    return (GeoPosition.userLocation == null)
         ? Scaffold(
             body: Center(
                 child: Column(
@@ -312,7 +327,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
                 color: Colors.white70,
                 onPressed: () {
                   var bounds = LatLngBounds();
-                  bounds.extend(LatLng(double.parse(latitude()), double.parse(longitude())));
+                  bounds.extend(new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),);
                   mapController.fitBounds(
                     bounds,
                     options: FitBoundsOptions(
@@ -329,7 +344,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
         child: FlutterMap(
           mapController: mapController,
           options: new MapOptions(
-              center: LatLng(double.parse(latitude()), double.parse(longitude())),
+              center: new LatLng(GeoPosition.userLocation.latitude,GeoPosition.userLocation.longitude),
               zoom: 16.0,
             ),
           layers: [
@@ -342,6 +357,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin{
               },
             ),
             SwitchLayers(),
+            CircleLayerOptions(circles: circleMarkers),
           ],
         ),
         ),

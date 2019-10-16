@@ -4,33 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'dart:async';
-import 'communication.dart';
-import 'list.dart';
-import 'package:sensors/sensors.dart';
-import 'package:activity_recognition_alt/activity_recognition_alt.dart';
+import 'package:bus_project/services/communication.dart';
+import 'package:bus_project/screens/Shared/list.dart';
 
-Activity userActivity;
-Position userLocation;
-List<double> _accelerometerValues;
-List<double> _gyroscopeValues;
-List<double> _userAccelerometerValues;
+import 'package:bus_project/models/Bus.dart';
+import 'package:bus_project/models/Line.dart';
+import 'package:bus_project/models/Station.dart';
 
-Geolocator geolocator = Geolocator();
-String MyBusId;
-String stationText = "No sations nearby";
-Stream<Position> stream;
-Stream<Activity> active;
-LocationAccuracy accuracy = LocationAccuracy.bestForNavigation;
-int timeInt = 30000;
-int distance = 2;
-List<StreamSubscription> _streamSubscriptions;
-bool nearStation=false;
+
 
 
 class settings {
     LocationAccuracy ac;
     String tm = '';
     String di = '';
+    String sr = '';
 }
 
 class GeoListenPage extends StatefulWidget {
@@ -41,13 +29,10 @@ class GeoListenPage extends StatefulWidget {
 class _GeoListenPageState extends State<GeoListenPage> {
     bool condition=false;
     Timer Refresh;
+
     final _formKey = GlobalKey<FormState>();
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     settings newSettings = new settings();
-
-    //final IntervalController = TextEditingController();
-    //final DistanceController = TextEditingController();
-    //final AccuracyController = Dropdown
 
     @override
     void initState() {
@@ -62,94 +47,8 @@ class _GeoListenPageState extends State<GeoListenPage> {
                 });
             }
         });
-        _getLocation().then((position) {   /// Ha facebook akkor nem megy | youtube sem megy | ha lezarodik akkor nem biztos...
-            userLocation = position;
-        });
-        if(_streamSubscriptions == null || _streamSubscriptions.length > 3) {
-            _streamSubscriptions = List<StreamSubscription>();
-            _streamSubscriptions
-                .add(accelerometerEvents.listen((AccelerometerEvent event) {
-                _accelerometerValues = <double>[event.x, event.y, event.z];
-                //print("ACCELEROMETER: x="+event.x.toString()+" y="+event.y.toString()+" z="+event.z.toString());
-            }));
-            _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
-                _gyroscopeValues = <double>[event.x, event.y, event.z];
-                //print("GYROSCOPE: x="+event.x.toString()+" y="+event.y.toString()+" z="+event.z.toString());
-            }));
-            _streamSubscriptions
-                .add(userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-                _userAccelerometerValues = <double>[event.x, event.y, event.z];
-                //print("USER ACCELEROMETER: x="+event.x.toString()+" y="+event.y.toString()+" z="+event.z.toString());
-            }));
-        }
-        if(active == null){
-          active = ActivityRecognitionAlt.activityUpdates();
-          active.listen((action){
-            userActivity = action;
-            print("Your phone is to ${action.confidence}% ${action.type}!");
-            //setState(() {
-            //  userActivity = action;
-            //});
-          });
-        }
-        if(stream == null) {
-            stream = geolocator
-                .getPositionStream(LocationOptions(
-                accuracy: accuracy, timeInterval: timeInt, distanceFilter: distance));
-            stream.listen((position) {
-                userLocation = position;
-                //print(userLocation);
-                //print(ServerClientDifference);
-                List<Station> nearbyStations = new List<Station>.from(station_list);
-                if(nearStation == false) {
-                  bool detected = false;
-                  nearbyStations.retainWhere((Station s) {
-                    double dist = distanceInKmBetweenEarthCoordinates(
-                        userLocation.latitude, userLocation.longitude,
-                        s.Latitude, s.Longitude);
-                    print(s.StationName + " dist = " + dist.toString() + " km");
-                    if (dist <= 0.03/*0.150.02*/) { //Distance between two coordinates.
-                      print(s.StationName + " is the closest dist = " +
-                          dist.toString() + " km");
-                      detected = true;
-                      return true;
-                    }
-                    return false;
-                  });
-                  if(detected){
-                    nearStation=true;
-                    stationText = "You are at: "+nearbyStations.first.StationName;
-                    GetTimeList(int.parse(nearbyStations.first.StationId)).then((val) =>
-                    arrivaltime_list = val.ArrivalTimeList
-                    );
-                  }else{
-                    nearStation=false;
-                    stationText = "No sations nearby";
-                    if(arrivaltime_list != null && arrivaltime_list.length > 0)
-                    arrivaltime_list.clear();
-                  }
-                }
-                if (MyBusId != null) {
-                    var post = {
-                        'BusId': MyBusId,
-                        'BusName': bus_list
-                            .singleWhere((o) => o.BusId == MyBusId, orElse: () => new Bus())
-                            .BusName,
-                        'Actual_Latitude': userLocation.latitude,
-                        'Actual_Longitude': userLocation.longitude,
-                        'Position_Accuracy': userLocation.accuracy,
-                        'Actual_Speed': userLocation.speed,
-                        'Speed_Accuracy': userLocation.speedAccuracy,
-                        'Direction': userLocation.heading,
-                        'Acceleration': _accelerometerValues,
-                        'Gyroscope': _gyroscopeValues,
-                        'Timestamp': DateTime.now().add(ServerClientDifference).toString().split(".")[0]
-                    };
-                    //print(post);
-                    PostBusInformationTest(post);
-                }
-            });
-        }
+        GeoPosition.getLocation();
+
     }
 
     void dispose() {
@@ -171,19 +70,21 @@ class _GeoListenPageState extends State<GeoListenPage> {
             //print('timeInt: ${newSettings.tm}');
 
             setState(() {
-                accuracy = newSettings.ac;
-                timeInt = int.parse(newSettings.tm) ;
-                distance = int.parse(newSettings.di) ;
+                GeoPosition.accuracy = newSettings.ac;
+                GeoPosition.timeInt = int.parse(newSettings.tm) ;
+                GeoPosition.distance = int.parse(newSettings.di) ;
+                range = (int.parse(newSettings.sr)/1000.toDouble());
                 //state.didChange(newValue); ////////////
             });
 
         }
     }
-
+    //Don't know what this is...
     void showMessage(String message, [MaterialColor color = Colors.red]) {
         _scaffoldKey.currentState
             .showSnackBar(new SnackBar(backgroundColor: color, content: new Text(message)));
     }
+
 
     void _showDialog(String Title, String Message) {
         // flutter defined function
@@ -210,6 +111,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
 
     @override
     Widget build(BuildContext context) {
+        currentContext = context;
         var list = bus_list.map((var value) {
             return new DropdownMenuItem<String>(
                 value: value.BusId,
@@ -220,17 +122,25 @@ class _GeoListenPageState extends State<GeoListenPage> {
             value: 'Off',
             child: new Text('Off'),
         ));
-        return Scaffold(
+        return /*Scaffold(
             body: Center(
-                child: Column(
+                child:*/
+            LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                    return SingleChildScrollView(
+                        child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight,
+                    ),
+                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                        userLocation == null
+                        GeoPosition.userLocation == null
                             ? CircularProgressIndicator()
                             : Text("Location:" +
-                            userLocation.latitude.toString() +
+                            GeoPosition.userLocation.latitude.toString() +
                             " " +
-                            userLocation.longitude.toString()),
+                            GeoPosition.userLocation.longitude.toString()),
                         Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: RaisedButton(
@@ -244,7 +154,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                             ),
                                         );
                                     }else{
-                                        _showDialog("No station nearby!","You need to be at most 30 meters close from a station to check for buses.");
+                                        _showDialog("No station nearby!","You need to be at most " +(range*1000).toString()+ " meters away from a station to check for buses.");
                                     }
                                 },
                                 color: Colors.blue,
@@ -255,9 +165,9 @@ class _GeoListenPageState extends State<GeoListenPage> {
                             ),
                         ),
                         Text(stationText),
-                        userActivity == null
+                        DrivingDetector.userActivity == null
                             ? CircularProgressIndicator()
-                            : Text("Your phone is to ${userActivity.confidence}% ${userActivity.type}!"),
+                            : Text("Your phone is to ${DrivingDetector.userActivity.confidence}% ${DrivingDetector.userActivity.type}! Driving Score= ${DrivingDetector.DrivingScore}"),
                         MyBusId == null
                             ? Text("Please select the bus you are traveling with:")
                             : Text("Your bus is:" + MyBusId),
@@ -268,8 +178,16 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                 setState(() {
                                     if(newVal == 'Off'){
                                         MyBusId = null;
+                                        nextStation = null;
+                                        actualStation = null;
+                                        actualLine = null;
+                                        DrivingDetector.pauseDrivingDetection();
                                     }else{
                                         MyBusId = newVal;
+                                        actualLine = line_list.firstWhere((Line l){
+                                            return l.LineID.toString() == newVal;
+                                        });
+                                        DrivingDetector.startDrivingDetection();
                                     }
                                 });
                             },
@@ -281,7 +199,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                     DropdownButton<LocationAccuracy>(
-                                        value: accuracy,
+                                        value: GeoPosition.accuracy,
                                         items: [
                                             DropdownMenuItem<LocationAccuracy>(value: LocationAccuracy.bestForNavigation,child: new Text("Best accuracy")),
                                             DropdownMenuItem<LocationAccuracy>(value: LocationAccuracy.high,child: new Text("High accuracy")),
@@ -294,7 +212,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                             setState(() {
                                                 //print(newValue.toString());
                                                 newSettings.ac = newValue;
-                                                accuracy= newValue;
+                                                GeoPosition.accuracy= newValue;
                                             });
                                         },
                                     ),
@@ -302,7 +220,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                         decoration: new InputDecoration(labelText: "Interval in seconds"),
                                         //controller: IntervalController,
                                         keyboardType: TextInputType.number,
-                                        initialValue: timeInt.toString(),
+                                        initialValue: GeoPosition.timeInt.toString(),
                                         validator: (value) {
                                             if (value.isEmpty) {
                                                 return 'If you want to save the settings you must provide information.';
@@ -315,7 +233,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                         decoration: new InputDecoration(labelText: "Distance in meters"),
                                         //controller: DistanceController,
                                         keyboardType: TextInputType.number,
-                                        initialValue: distance.toString(),
+                                        initialValue: GeoPosition.distance.toString(),
                                         validator: (value) {
                                             if (value.isEmpty) {
                                                 return 'If you want to save the settings you must provide information.';
@@ -323,6 +241,19 @@ class _GeoListenPageState extends State<GeoListenPage> {
                                             return null;
                                         },
                                         onSaved: (val) => newSettings.di = val,
+                                    ),
+                                    TextFormField(
+                                        decoration: new InputDecoration(labelText: "Station detection distance in meters"),
+                                        //controller: DistanceController,
+                                        keyboardType: TextInputType.number,
+                                        initialValue: (range*1000).toString(),
+                                        validator: (value) {
+                                            if (value.isEmpty) {
+                                                return 'If you want to save the settings you must provide information.';
+                                            }
+                                            return null;
+                                        },
+                                        onSaved: (val) => newSettings.sr = val,
                                     ),
                                     Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -343,53 +274,23 @@ class _GeoListenPageState extends State<GeoListenPage> {
                         )
                     ],
                 ),
-            ),
-        );
+                        ),
+                    );
+                },
+            );
+            /*),
+        );*/
     }
 
-    Future<Position> _getLocation() async {
-        var currentLocation;
-        try {
-            currentLocation = await geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.best);
-        } catch (e) {
-            currentLocation = null;
-        }
-        return currentLocation;
-    }
 }
 
-String longitude(){
-    return userLocation.longitude.toString();
-}
 
-String latitude(){
-    return userLocation.latitude.toString();
-}
-
-double degreesToRadians(degrees) {
-  return degrees * PI / 180;
-}
-
-double distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
-  var earthRadiusKm = 6371;
-
-  var dLat = degreesToRadians(lat2-lat1);
-  var dLon = degreesToRadians(lon2-lon1);
-
-  lat1 = degreesToRadians(lat1);
-  lat2 = degreesToRadians(lat2);
-
-  var a = sin(dLat/2) * sin(dLat/2) +
-      sin(dLon/2) * sin(dLon/2) * cos(lat1) * cos(lat2);
-  var c = 2 * atan2(sqrt(a), sqrt(1-a));
-  return earthRadiusKm * c;
-}
 
 
 class BusesScreen extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
+        currentContext = context;
         return Scaffold(
             appBar: AppBar(
                 title: Text("Incomming Buses"),

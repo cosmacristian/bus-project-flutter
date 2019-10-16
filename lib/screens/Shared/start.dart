@@ -1,7 +1,11 @@
-import 'package:bus_project/geolocation.dart';
+import 'package:bus_project/screens/SettingsPage/geolocation.dart';
+import 'package:bus_project/services/ActivityRecognition.dart';
+import 'package:bus_project/services/GPS.dart';
 import 'package:flutter/material.dart';
-import 'maps.dart';
-import 'bus_list.dart';
+import 'package:bus_project/screens/MapPage/maps.dart';
+import 'package:bus_project/screens/BusListPage/bus_list.dart';
+
+import 'list.dart';
 
 
 class start extends StatefulWidget{
@@ -15,6 +19,8 @@ class _newBar extends State<start> with SingleTickerProviderStateMixin{
   @override
   void initState(){
     super.initState();
+    //DrivingDetector = ActivityRecognition();
+    //GeoPosition = GPS();
     tabController= TabController(length: 3, vsync: this);
     //post = fetchPost('https://putsreq.com/Ys5rRZMUkZbBlazbTtLF');
   }

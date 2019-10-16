@@ -2,11 +2,11 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   activity_recognition_alt:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
-      path: activityrecognition
-      relative: true
-    source: path
+      name: activity_recognition_alt
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.7"
   ansicolor:
     dependency: transitive

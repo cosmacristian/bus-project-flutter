@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'list.dart';
-import 'maps.dart';
-import 'communication.dart';
+import 'package:bus_project/screens/Shared/list.dart';
+import 'package:bus_project/screens/MapPage/maps.dart';
+import 'package:bus_project/services/communication.dart';
 import 'package:intl/intl.dart';
+
+import 'package:bus_project/models/Station.dart';
+import 'package:bus_project/models/Timetable.dart';
 
 class Todo {
   String BusId;
@@ -25,10 +28,23 @@ class _BusListActionListener extends  State<Buslist1>{
   @override
   void initState() {
     super.initState();
+
     if(bus_list == null) {
       GetBusInformation().then((val) =>
           setState(() {
             bus_list = val.BusList;
+          })
+      );
+    }
+    if(station_list == null) {
+      GetStationsList().then((val) =>
+      station_list = val.StationList
+      );
+    }
+    if(line_list == null) {
+      GetLinesList().then((val) =>
+          setState(() {
+            line_list = val.LineList;
           })
       );
     }
@@ -68,6 +84,7 @@ class _BusListActionListener extends  State<Buslist1>{
 
   @override
   Widget build(BuildContext context) {
+    currentContext = context;
     return bus_list == null
         ? Scaffold(
             body: Center(
@@ -131,6 +148,7 @@ class TimetableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    currentContext = context;
     actualTimetable1 = new List<Timetable>.from(timetable);
     actualTimetable1.retainWhere((Timetable t) {
       if(t.busNr == busid){
