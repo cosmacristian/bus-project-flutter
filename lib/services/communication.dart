@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'dart:async';
 import 'package:bus_project/models/ArrivalTime.dart';
 import 'package:bus_project/models/Bus.dart';
 import 'package:bus_project/models/Line.dart';
@@ -133,4 +131,3 @@ Future<ArrivalTimeListPost> GetTimeList(int StationID) async {
     throw Exception('Failed to load post');
   }
 }
-

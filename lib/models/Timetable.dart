@@ -1,22 +1,20 @@
-
 class Timetable {
   String busNr;
   String startTime;
   String stationID;
 
-  Timetable({this.busNr,this.startTime,this.stationID});
+  Timetable({this.busNr, this.startTime, this.stationID});
 
-  factory Timetable.fromJson(Map<String, dynamic> json){
+  factory Timetable.fromJson(Map<String, dynamic> json) {
     return new Timetable(
         busNr: json['busNr'].toString(),
         startTime: json['startTime'].toString(),
-        stationID: json['stationID'].toString()
-    );
+        stationID: json['stationID'].toString());
   }
 
   @override
   String toString() {
-    return busNr+" will start : "+startTime+" from "+stationID+"\n";
+    return busNr + " will start : " + startTime + " from " + stationID + "\n";
   }
 }
 
@@ -38,9 +36,8 @@ class TimetableListPost {
   }*/
 
   factory TimetableListPost.fromJson(List<dynamic> parsedJson) {
-
     List<Timetable> Timetables = new List<Timetable>();
-    for(int i=0;i<parsedJson.length;i++){
+    for (int i = 0; i < parsedJson.length; i++) {
       Timetables.add(Timetable.fromJson(parsedJson.elementAt(i)));
     }
 
@@ -50,5 +47,4 @@ class TimetableListPost {
       TimetableList: Timetables,
     );
   }
-
 }

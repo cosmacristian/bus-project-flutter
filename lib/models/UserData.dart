@@ -5,10 +5,11 @@ class UserData {
 
   Position userLocation;
 
-
   factory UserData() {
     return _userData;
   }
+
   UserData._internal();
 }
+
 final userData = UserData();

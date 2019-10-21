@@ -5,21 +5,29 @@ class Bus {
   double Actual_Longitude;
   String Measurement_Timestamp;
 
-  Bus({this.BusId,this.BusName,this.Actual_Latitude,this.Actual_Longitude,this.Measurement_Timestamp});
+  Bus(
+      {this.BusId,
+      this.BusName,
+      this.Actual_Latitude,
+      this.Actual_Longitude,
+      this.Measurement_Timestamp});
 
-  factory Bus.fromJson(Map<String, dynamic> json){
+  factory Bus.fromJson(Map<String, dynamic> json) {
     return new Bus(
         BusId: json['BusId'].toString(),
         BusName: json['BusName'].toString(),
         Actual_Longitude: json['Actual_Longitude'].toDouble(),
         Actual_Latitude: json['Actual_Latitude'].toDouble(),
-        Measurement_Timestamp : json['Measurement_Timestamp'].toString()
-    );
+        Measurement_Timestamp: json['Measurement_Timestamp'].toString());
   }
 
   @override
   String toString() {
-    return BusName+" Latitude: "+Actual_Latitude.toString()+" Longitude: "+Actual_Longitude.toString();
+    return BusName +
+        " Latitude: " +
+        Actual_Latitude.toString() +
+        " Longitude: " +
+        Actual_Longitude.toString();
   }
 }
 
@@ -41,9 +49,8 @@ class BusListPost {
   }*/
 
   factory BusListPost.fromJson(List<dynamic> parsedJson) {
-
     List<Bus> buses = new List<Bus>();
-    for(int i=0;i<parsedJson.length;i++){
+    for (int i = 0; i < parsedJson.length; i++) {
       buses.add(Bus.fromJson(parsedJson.elementAt(i)));
     }
 
@@ -53,5 +60,4 @@ class BusListPost {
       BusList: buses,
     );
   }
-
 }

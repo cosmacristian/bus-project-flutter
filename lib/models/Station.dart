@@ -1,24 +1,27 @@
-
 class Station {
   String StationId;
   String StationName;
   double Latitude;
   double Longitude;
 
-  Station({this.StationId,this.StationName,this.Latitude,this.Longitude});
+  Station({this.StationId, this.StationName, this.Latitude, this.Longitude});
 
-  factory Station.fromJson(Map<String, dynamic> json){
+  factory Station.fromJson(Map<String, dynamic> json) {
     return new Station(
         StationId: json['StationId'].toString(),
         StationName: json['StationName'].toString(),
         Longitude: json['Longitude'].toDouble(),
-        Latitude: json['Latitude'].toDouble()
-    );
+        Latitude: json['Latitude'].toDouble());
   }
 
   @override
   String toString() {
-    return StationName+" Latitude: "+Latitude.toString()+" Longitude: "+Longitude.toString()+"\n";
+    return StationName +
+        " Latitude: " +
+        Latitude.toString() +
+        " Longitude: " +
+        Longitude.toString() +
+        "\n";
   }
 }
 
@@ -40,9 +43,8 @@ class StationListPost {
   }*/
 
   factory StationListPost.fromJson(List<dynamic> parsedJson) {
-
     List<Station> stations = new List<Station>();
-    for(int i=0;i<parsedJson.length;i++){
+    for (int i = 0; i < parsedJson.length; i++) {
       stations.add(Station.fromJson(parsedJson.elementAt(i)));
     }
 
@@ -52,5 +54,4 @@ class StationListPost {
       StationList: stations,
     );
   }
-
 }

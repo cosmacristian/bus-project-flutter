@@ -1,22 +1,20 @@
-
 class ArrivalTime {
   String busID;
   String TheTimeString;
   String requiredTime;
 
-  ArrivalTime({this.busID,this.TheTimeString,this.requiredTime});
+  ArrivalTime({this.busID, this.TheTimeString, this.requiredTime});
 
-  factory ArrivalTime.fromJson(Map<String, dynamic> json){
+  factory ArrivalTime.fromJson(Map<String, dynamic> json) {
     return new ArrivalTime(
         busID: json['busID'].toString(),
         TheTimeString: json['TheTimeString'].toString(),
-        requiredTime: json['requiredTime'].toString()
-    );
+        requiredTime: json['requiredTime'].toString());
   }
 
   @override
   String toString() {
-    return busID+" will arrive in : "+TheTimeString+"\n";
+    return busID + " will arrive in : " + TheTimeString + "\n";
   }
 }
 
@@ -38,9 +36,8 @@ class ArrivalTimeListPost {
   }*/
 
   factory ArrivalTimeListPost.fromJson(List<dynamic> parsedJson) {
-
     List<ArrivalTime> ArrivalTimes = new List<ArrivalTime>();
-    for(int i=0;i<parsedJson.length;i++){
+    for (int i = 0; i < parsedJson.length; i++) {
       ArrivalTimes.add(ArrivalTime.fromJson(parsedJson.elementAt(i)));
     }
 
@@ -50,5 +47,4 @@ class ArrivalTimeListPost {
       ArrivalTimeList: ArrivalTimes,
     );
   }
-
 }
