@@ -1,4 +1,5 @@
 import 'package:bus_project/screens/SettingsPage/geolocation.dart';
+import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:bus_project/screens/MapPage/maps.dart';
 import 'package:bus_project/screens/BusListPage/bus_list.dart';
@@ -32,11 +33,11 @@ class _newBar extends State<start> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Where is my bus?'),
+        title: Text(AppLocalizations.of(context).translate('main_title')),//Text('Where is my bus?'),
         bottom: TabBar(controller: tabController, tabs: [
-          Text('Station'),
-          Text('Maps'),
-          Text('Settings'),
+          Text(AppLocalizations.of(context).translate('menu_buses')),//Text('Station'),
+          Text(AppLocalizations.of(context).translate('menu_maps')),//Text('Maps'),
+          Text(AppLocalizations.of(context).translate('menu_settings')),//Text('Settings'),
         ]),
       ),
       body: TabBarView(

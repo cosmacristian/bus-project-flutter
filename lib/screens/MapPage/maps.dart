@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -268,7 +269,8 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 80.0,
                           child: RaisedButton(
-                            child: Text('Buses'),
+                            autofocus: true,//TALAN HIBA
+                            child: Text(AppLocalizations.of(context).translate('map_btn_bus')),//Text('Buses'),
                             highlightColor: Color(0xFF42A5F5),
                             color: toggleBus ? Colors.blue : Colors.white70,
                             onPressed: () {
@@ -285,7 +287,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 84.0,
                           child: RaisedButton(
-                            child: Text('Stations'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_station')),//Text('Stations'),
                             highlightColor: Color(0xFF42A5F5),
                             color: toggleStation ? Colors.blue : Colors.white70,
                             onPressed: () {
@@ -303,7 +305,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 80.0,
                           child: RaisedButton(
-                            child: Text('Lines'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_lines')),//Text('Lines'),
                             highlightColor: Color(0xFF42A5F5),
                             color: toggleLine ? Colors.blue : Colors.white70,
                             onPressed: () {
@@ -321,7 +323,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 80.0,
                           child: RaisedButton(
-                            child: Text('Center'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_center')),//Text('Center'),
                             highlightColor: Color(0xFF42A5F5),
                             color: Colors.white70,
                             onPressed: () {

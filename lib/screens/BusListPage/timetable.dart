@@ -1,6 +1,7 @@
 import 'package:bus_project/models/Station.dart';
 import 'package:bus_project/models/Timetable.dart';
 import 'package:bus_project/screens/Shared/list.dart';
+import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -50,7 +51,7 @@ class TimetableScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            "Selected Bus: " + busid + " " + dateFormat.format(DateTime.now())),
+            AppLocalizations.of(context).translate('timetable_title') + busid + " " + dateFormat.format(DateTime.now())),
       ),
       body: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <

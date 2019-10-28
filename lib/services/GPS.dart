@@ -4,6 +4,7 @@ import 'package:bus_project/models/Bus.dart';
 import 'package:bus_project/models/Line.dart';
 import 'package:bus_project/models/Station.dart';
 import 'package:bus_project/screens/Shared/list.dart';
+import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
@@ -62,12 +63,12 @@ class GPS {
       });
       if (detected) {
         nearStation = true;
-        stationText = "You are at: " + nearbyStations.first.StationName;
+        stationText = AppLocalizations.of(currentContext).translate('gps_you_are_at')/*"You are at: "*/ + nearbyStations.first.StationName;
         GetTimeList(int.parse(nearbyStations.first.StationId))
             .then((val) => arrivaltime_list = val.ArrivalTimeList);
       } else {
         nearStation = false;
-        stationText = "No sations nearby";
+        stationText = AppLocalizations.of(currentContext).translate('settings_nostation');//"No sations nearby";
         if (arrivaltime_list != null && arrivaltime_list.length > 0)
           arrivaltime_list.clear();
       }
@@ -161,20 +162,20 @@ class GPS {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Stop location share?"),
+          title: new Text(AppLocalizations.of(context).translate('gps_stop_location')),//Text("Stop location share?"),
           content:
-              new Text("Did you finish your travel? Or did something happen?"),
+              new Text(AppLocalizations.of(context).translate('gps_stop_location_msg')),//Text("Did you finish your travel? Or did something happen?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Continue"),
+              child: new Text(AppLocalizations.of(context).translate('gps_stop_location_continue')),//Text("Continue"),
               onPressed: () {
                 questionSent = false;
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Stop"),
+              child: new Text(AppLocalizations.of(context).translate('gps_stop_location_stop')),//Text("Stop"),
               onPressed: () {
                 MyBusId = null;
                 questionSent = false;
@@ -194,13 +195,13 @@ class GPS {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Location service is offline!"),
+          title: new Text(AppLocalizations.of(context).translate('location_service_title')),//Text("Location service is offline!"),
           content: new Text(
-              "Please make sure you have enabled the Location Services on your phone"),
+            AppLocalizations.of(context).translate('location_service_msg')),//"Please make sure you have enabled the Location Services on your phone"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Ok"),
+              child: new Text(AppLocalizations.of(context).translate('ok')),//Text("Ok"),
               onPressed: () {
                 questionSent = false;
                 Navigator.of(context).pop();

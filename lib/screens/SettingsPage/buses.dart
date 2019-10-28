@@ -1,4 +1,5 @@
 import 'package:bus_project/screens/Shared/list.dart';
+import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class BusesScreen extends StatelessWidget {
     currentContext = context;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Incomming Buses"),
+        title: Text(AppLocalizations.of(context).translate('buses_title'))//Text("Incomming Buses"),
       ),
       body: Center(
           child: ListView.builder(
