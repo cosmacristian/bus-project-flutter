@@ -25,6 +25,11 @@ class _BusListActionListener extends State<Buslist1> {
   void initState() {
     super.initState();
 
+    if (businfo_list == null) {
+      GetBusesList().then((val) => setState(() {
+        businfo_list = val.BusInfoList;
+      }));
+    }
     if (bus_list == null) {
       GetBusInformation().then((val) => setState(() {
             bus_list = val.BusList;
@@ -57,7 +62,7 @@ class _BusListActionListener extends State<Buslist1> {
   @override
   Widget build(BuildContext context) {
     currentContext = context;
-    return bus_list == null
+    return businfo_list == null
         ? Scaffold(
             body: Center(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center,
@@ -65,17 +70,17 @@ class _BusListActionListener extends State<Buslist1> {
                     ///new
                     children: <Widget>[CircularProgressIndicator()])))
         : ListView.builder(
-            itemCount: bus_list.length,
+            itemCount: businfo_list.length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: new CircleAvatar(
-                    child: new Text(bus_list.elementAt(index).BusId)),
-                title: Text(bus_list.elementAt(index).BusName),
+                    child: new Text(businfo_list.elementAt(index).BusId)),
+                title: Text(businfo_list.elementAt(index).BusName),
                 trailing: Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   print("Rovid gomb nyomas");
                   if (timetable != null) {
-                    String busid = bus_list.elementAt(index).BusId;
+                    String busid = businfo_list.elementAt(index).BusId;
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -86,10 +91,13 @@ class _BusListActionListener extends State<Buslist1> {
                 },
                 onLongPress: () {
                   print("Hosszu gomb nyomas");
+                  int i =bus_list.indexWhere((x){
+                    return businfo_list.elementAt(index) == x.BusId;
+                  });
                   Todo coords = Todo(
-                      bus_list.elementAt(index).BusId,
-                      bus_list.elementAt(index).Actual_Latitude,
-                      bus_list.elementAt(index).Actual_Longitude);
+                      bus_list.elementAt(i).BusId,
+                      bus_list.elementAt(i).Actual_Latitude,
+                      bus_list.elementAt(i).Actual_Longitude);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

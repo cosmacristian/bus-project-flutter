@@ -1,3 +1,4 @@
+import 'package:bus_project/models/BusInfo.dart';
 import 'package:bus_project/services/ActivityRecognition.dart';
 import 'package:bus_project/services/GPS.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:bus_project/models/Station.dart';
 import 'package:bus_project/models/Timetable.dart';
 
 List<Bus> bus_list;
+List<BusInfo> businfo_list;
 List<Station> station_list;
 List<Line> line_list;
 List<ArrivalTime> arrivaltime_list;

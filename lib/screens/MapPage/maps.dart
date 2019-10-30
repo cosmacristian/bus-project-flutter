@@ -36,6 +36,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    mapController = MapController();
     GeoPosition.getLocation();
     if (todo != null)
       SchedulerBinding.instance.addPostFrameCallback((_) => _animatedMapMove(
@@ -323,7 +324,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 80.0,
                           child: RaisedButton(
-                            child: Text(AppLocalizations.of(context).translate('map_btn_center')),//Text('Center'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_center')),//Text('Center'),  
                             highlightColor: Color(0xFF42A5F5),
                             color: Colors.white70,
                             onPressed: () {

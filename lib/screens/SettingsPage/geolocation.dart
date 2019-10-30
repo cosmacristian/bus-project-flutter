@@ -100,7 +100,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
   @override
   Widget build(BuildContext context) {
     currentContext = context;
-    var list = bus_list.map((var value) {
+    var list = businfo_list.map((var value) {
       return new DropdownMenuItem<String>(
         value: value.BusId,
         child: new Text(value.BusId),

@@ -57,7 +57,7 @@ class ActivityRecognition {
       }
     }
 
-    Timer.periodic(Duration(seconds: 2), (DrivingCheck) {
+    Timer.periodic(Duration(seconds: 2), (DrivingCheck) {  //Something is fishy with this
       if (userActivity.type == "STILL" && DrivingScore > 0) DrivingScore -= 1;
       if (userActivity.type == "TILTING" && DrivingScore > 0) DrivingScore -= 1;
       if (userActivity.type == "UNDEFINED" && DrivingScore > 0)

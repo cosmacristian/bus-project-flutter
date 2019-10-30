@@ -115,9 +115,6 @@ class GPS {
         if (DrivingDetector.DrivingScore >= 40) {
           var post = {
             'BusId': MyBusId,
-            'BusName': bus_list
-                .singleWhere((o) => o.BusId == MyBusId, orElse: () => new Bus())
-                .BusName,
             'Actual_Latitude': userLocation.latitude,
             'Actual_Longitude': userLocation.longitude,
             'Position_Accuracy': userLocation.accuracy,

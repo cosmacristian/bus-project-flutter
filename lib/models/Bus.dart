@@ -1,13 +1,11 @@
 class Bus {
   String BusId;
-  String BusName;
   double Actual_Latitude;
   double Actual_Longitude;
   String Measurement_Timestamp;
 
   Bus(
       {this.BusId,
-      this.BusName,
       this.Actual_Latitude,
       this.Actual_Longitude,
       this.Measurement_Timestamp});
@@ -15,7 +13,6 @@ class Bus {
   factory Bus.fromJson(Map<String, dynamic> json) {
     return new Bus(
         BusId: json['BusId'].toString(),
-        BusName: json['BusName'].toString(),
         Actual_Longitude: json['Actual_Longitude'].toDouble(),
         Actual_Latitude: json['Actual_Latitude'].toDouble(),
         Measurement_Timestamp: json['Measurement_Timestamp'].toString());
@@ -23,7 +20,7 @@ class Bus {
 
   @override
   String toString() {
-    return BusName +
+    return BusId +
         " Latitude: " +
         Actual_Latitude.toString() +
         " Longitude: " +
