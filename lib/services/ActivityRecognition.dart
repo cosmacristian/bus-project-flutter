@@ -64,7 +64,7 @@ class ActivityRecognition {
         DrivingScore -= 1;
     });
 
-    if (streamSubscriptions.length > 3) {
+    if (streamSubscriptions.length < 3) {
       streamSubscriptions
           .add(accelerometerEvents.listen((AccelerometerEvent event) {
         accelerometerValues = <double>[event.x, event.y, event.z];

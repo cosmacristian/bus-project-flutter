@@ -129,7 +129,7 @@ class GPS {
                 .split(".")[0]
           };
           //print(post);
-          //PostBusInformationTest(post);//Uncomment when needed.
+          PostBusInformationTest(post);//Uncomment when needed.
         } else {
           if (!questionSent) {
             questionSent = true;
