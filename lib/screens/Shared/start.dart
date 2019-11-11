@@ -32,6 +32,13 @@ class _newBar extends State<start> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          flexibleSpace: SafeArea(
+            child: getTabBar(),
+          ),
+        ),
+        body: getTabBarPages());
+    /*return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('main_title')),//Text('Where is my bus?'),
         bottom: TabBar(controller: tabController, tabs: [
@@ -48,7 +55,26 @@ class _newBar extends State<start> with SingleTickerProviderStateMixin {
             Maps(),
             GeoListenPage(),
           ]),
-    );
+    );*/
+  }
+
+  Widget getTabBar() {
+    return TabBar(controller: tabController, tabs: [
+      Tab(text: AppLocalizations.of(context).translate('menu_buses')),//Text('Station'),
+      Tab(text: AppLocalizations.of(context).translate('menu_maps')),//Text('Maps'),
+      Tab(text: AppLocalizations.of(context).translate('menu_settings')),//Text('Settings'),
+    ]);
+  }
+
+  Widget getTabBarPages() {
+    return TabBarView(
+        controller: tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Buslist1(),
+          Maps(),
+          GeoListenPage(),
+        ]);
   }
 
 /*Future<String> apiRequest(String url, Map jsonMap) async {

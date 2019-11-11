@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bus_project/models/BusInfo.dart';
+import 'package:bus_project/models/Trace.dart';
 import 'package:http/http.dart' as http;
 import 'package:bus_project/models/ArrivalTime.dart';
 import 'package:bus_project/models/Bus.dart';
@@ -46,6 +47,21 @@ Future<LineListPost> GetLinesList() async {
     // If the call to the server was successful, parse the JSON
     var temp = LineListPost.fromJson(json.decode(response.body));
     temp.LineList.forEach((f) => print(f.toString()));
+    return temp;
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
+Future<TraceListPost> GetTracesList() async {
+  final response = await http
+      .get("http://193.226.0.198:5210/WCFService/Service1/web/GetTracesList");
+
+  if (response.statusCode == 200) {
+    // If the call to the server was successful, parse the JSON
+    var temp = TraceListPost.fromJson(json.decode(response.body));
+    temp.TraceList.forEach((f) => print(f.toString()));
     return temp;
   } else {
     // If that call was not successful, throw an error.

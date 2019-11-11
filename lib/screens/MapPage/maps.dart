@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:bus_project/models/Line.dart';
+import 'package:bus_project/models/Trace.dart';
 import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -27,9 +29,11 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
   Timer _timer;
   MapController mapController;
   int selectedLayer = 0;
-  bool toggleBus = false;
+  bool toggleBus = true;
   bool toggleStation = false;
   bool toggleLine = false;
+  String selectedBusId = "Off";
+
 
   Maps_flutter([Todo this.todo = null]);
 
@@ -71,37 +75,36 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
       }
       markers = StationMarkers();
     } else if (selectedLayer == 2) {
-      print("LAYER SELECTED >> STATIONS");
+      print("LAYER SELECTED >> LINES");
       if (_timer != null) {
         _timer.cancel();
         _timer = null;
       }
       polylines = new List<Polyline>();
       markers = null;
-      polylines.add(LinesDrawer());
+      if(selectedBusId != "Off")
+        polylines.add(LinesDrawer());
     }
     if (markers != null) {
       return new MarkerLayerOptions(markers: markers);
     } else {
-      return new PolylineLayerOptions(polylines: polylines); //Miert lep ide be?
+      return new PolylineLayerOptions(polylines: polylines);
     }
   }
 
   Polyline LinesDrawer() {
     Polyline temp2;
-    List<LatLng> temp3;
-    if (station_list != null || line_list != null) {
-      temp3 = line_list.first.Stations.map((sta) {
-        //Station act = station_list.singleWhere((o) =>
-        //o.StationId == sta.StationID, orElse: () => null);
-        var act =
-            station_list.where((o) => o.StationId == sta.StationID.toString());
-        if (act.isEmpty == true) return null;
-        return new LatLng(act.first.Latitude, act.first.Longitude);
+    List<LatLng> temp3 = new List<LatLng>();
+    Trace line;
+    if (trace_list != null) {
+      line = trace_list.singleWhere((o) => o.LineID.toString() == selectedBusId, orElse: () => null);
+      if(line != null)
+      temp3 = line.Points.map((poi) {
+        return new LatLng(poi.Latitude, poi.Longitude);
       }).toList();
     }
-    print(temp3);
-    temp3.removeWhere((value) => value == null);
+    //print(temp3);
+    //temp3.removeWhere((value) => value == null);
     print(temp3);
     return Polyline(points: temp3, strokeWidth: 4.0, color: Colors.purple);
   }
@@ -251,6 +254,16 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     currentContext = context;
+    var list = businfo_list.map((var value) {
+      return new DropdownMenuItem<String>(
+        value: value.BusId,
+        child: new Text(value.BusName),
+      );
+    }).toList();
+    list.add(new DropdownMenuItem<String>(
+      value: 'Off',
+      child: new Text(AppLocalizations.of(context).translate('off')),//Text('Off'),
+    ));
     return (GeoPosition.userLocation == null)
         ? Scaffold(
             body: Center(
@@ -345,6 +358,24 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
+                  ),
+                  Visibility(
+                    child:new DropdownButton<String>(
+                      isExpanded: true,
+                    value: selectedBusId == "Off" ? 'Off' : selectedBusId,
+                    items: list.reversed.toList(),
+                    onChanged: (newVal) {
+                      setState(() {
+                        if (newVal == 'Off') {
+                          selectedBusId = "Off";
+                        } else {
+                          selectedBusId = newVal;
+                          //Refresh lines
+                        }
+                      });
+                    },
+                  ),
+                    visible: toggleLine,
                   ),
                   Flexible(
                     child: FlutterMap(

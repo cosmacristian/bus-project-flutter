@@ -1,4 +1,5 @@
 import 'package:bus_project/models/BusInfo.dart';
+import 'package:bus_project/models/Trace.dart';
 import 'package:bus_project/services/ActivityRecognition.dart';
 import 'package:bus_project/services/GPS.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ List<Bus> bus_list;
 List<BusInfo> businfo_list;
 List<Station> station_list;
 List<Line> line_list;
+List<Trace> trace_list;
 List<ArrivalTime> arrivaltime_list;
 List<Timetable> timetable;
 double range = 0.15; //0.15 0.03

@@ -43,6 +43,11 @@ class _BusListActionListener extends State<Buslist1> {
             line_list = val.LineList;
           }));
     }
+    if (trace_list == null) {
+      GetTracesList().then((val) => setState(() {
+        trace_list = val.TraceList;
+      }));
+    }
     if (timetable == null) {
       GetTimetable().then((val) => setState(() {
             timetable = val.TimetableList;
@@ -81,6 +86,7 @@ class _BusListActionListener extends State<Buslist1> {
                   print("Rovid gomb nyomas");
                   if (timetable != null) {
                     String busid = businfo_list.elementAt(index).BusId;
+                    if(timetable.singleWhere((o) => o.busNr == busid, orElse: () => null) != null)
                     Navigator.push(
                       context,
                       MaterialPageRoute(
