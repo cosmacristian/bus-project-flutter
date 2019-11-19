@@ -48,40 +48,65 @@ class TimetableScreen extends StatelessWidget {
         return false;
       }
     });
+    List<Widget> list1 = List();
+    actualTimetable1.forEach((Timetable t){
+      list1.add(new Padding(padding: new EdgeInsets.all(20.0),
+          child: new Text(
+              t.startTime,
+              style: new TextStyle(fontSize: 25.0)
+          )));
+    });
+    List<Widget> list2 = List();
+    actualTimetable2.forEach((Timetable t){
+      list2.add(new Padding(padding: new EdgeInsets.all(20.0),
+          child: new Text(
+              t.startTime,
+              style: new TextStyle(fontSize: 25.0)
+          )));
+    });
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            AppLocalizations.of(context).translate('timetable_title') + busid + " " + dateFormat.format(DateTime.now())),
-      ),
-      body: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-        Text(station_list.firstWhere((Station s) {
-          if (s.StationId == actualTimetable1.elementAt(0).stationID)
-            return true;
-          return false;
-        }).StationName),
-        new Expanded(
-            child: ListView.builder(
-          itemCount: actualTimetable1.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-                title: Text(actualTimetable1.elementAt(index).startTime));
-          },
-        )),
-        Text(station_list.firstWhere((Station s) {
-          if (s.StationId == actualTimetable2.elementAt(0).stationID)
-            return true;
-          return false;
-        }).StationName),
-        new Expanded(
-            child: ListView.builder(
-                itemCount: actualTimetable2.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                      title: Text(actualTimetable2.elementAt(index).startTime));
-                })),
-      ])),
-    );
+        appBar: AppBar(
+          title: Text(
+              AppLocalizations.of(context).translate('timetable_title') +
+                  busid +
+                  " " +
+                  dateFormat.format(DateTime.now())),
+        ),
+        body: //CustomScrollView( slivers: <Widget>[
+        Row(
+        children: <Widget>[
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(station_list.firstWhere((Station s) {
+                  if (s.StationId == actualTimetable1.elementAt(0).stationID)
+                    return true;
+                  return false;
+                }).StationName,
+                style: new TextStyle(fontSize: 20.0)),
+                new Container(
+                    height: 500.0,
+                    width: 180.0,
+                    child:
+                CustomScrollView(
+                    slivers: <Widget>[SliverList(delegate: new SliverChildListDelegate(list1))])),
+              ]),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(station_list.firstWhere((Station s) {
+                  if (s.StationId == actualTimetable2.elementAt(0).stationID)
+                    return true;
+                  return false;
+                }).StationName,
+                style: new TextStyle(fontSize: 20.0)),
+                new Container(
+                    height: 500.0,
+                    width: 180.0,
+                    child:
+                CustomScrollView(
+                    slivers: <Widget>[SliverList(delegate: new SliverChildListDelegate(list2))])),
+              ]),
+        ]));
   }
 }

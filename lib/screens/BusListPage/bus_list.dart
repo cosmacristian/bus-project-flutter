@@ -86,7 +86,7 @@ class _BusListActionListener extends State<Buslist1> {
                   print("Rovid gomb nyomas");
                   if (timetable != null) {
                     String busid = businfo_list.elementAt(index).BusId;
-                    if(timetable.singleWhere((o) => o.busNr == busid, orElse: () => null) != null)
+                    if(timetable.firstWhere((o) => o.busNr == busid, orElse: () => null) != null)//singleWhere((o) => o.busNr == busid, orElse: () => null) != null)
                     Navigator.push(
                       context,
                       MaterialPageRoute(
