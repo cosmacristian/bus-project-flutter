@@ -257,13 +257,22 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
     var list = businfo_list.map((var value) {
       return new DropdownMenuItem<String>(
         value: value.BusId,
-        child: new Text(value.BusName),
+        child: new Text(value.BusName,
+          style: TextStyle(
+            fontStyle: FontStyle.italic
+          ),
+        ),
       );
     }).toList();
     list.add(new DropdownMenuItem<String>(
       value: 'Off',
-      child: new Text(AppLocalizations.of(context).translate('off')),//Text('Off'),
+      child: new Text(AppLocalizations.of(context).translate('off'),
+        style: TextStyle(
+          fontStyle: FontStyle.italic
+        ),
+      ),//Text('Off'),
     ));
+
     return (GeoPosition.userLocation == null)
         ? Scaffold(
             body: Center(
@@ -284,8 +293,17 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                           width: 80.0,
                           child: RaisedButton(
                             autofocus: true,//TALAN HIBA
-                            child: Text(AppLocalizations.of(context).translate('map_btn_bus')),//Text('Buses'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_bus').toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),),//Text('Buses'),
                             highlightColor: Color(0xFF42A5F5),
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: toggleBus ? Colors.white : Colors.blue)),
+                            textColor: toggleBus ? Colors.white : Colors.blue,
                             color: toggleBus ? Colors.blue : Colors.white70,
                             onPressed: () {
                               print("Buses Pressed");
@@ -301,8 +319,18 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 84.0,
                           child: RaisedButton(
-                            child: Text(AppLocalizations.of(context).translate('map_btn_station')),//Text('Stations'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_station').toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),//Text('Stations'),
                             highlightColor: Color(0xFF42A5F5),
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: toggleStation ? Colors.white : Colors.blue)),
+                            textColor: toggleStation ? Colors.white : Colors.blue,
                             color: toggleStation ? Colors.blue : Colors.white70,
                             onPressed: () {
                               print(
@@ -319,8 +347,18 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                         new SizedBox(
                           width: 80.0,
                           child: RaisedButton(
-                            child: Text(AppLocalizations.of(context).translate('map_btn_lines')),//Text('Lines'),
+                            child: Text(AppLocalizations.of(context).translate('map_btn_lines').toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),//Text('Lines'),
                             highlightColor: Color(0xFF42A5F5),
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: toggleLine ? Colors.white : Colors.blue)),
+                            textColor: toggleLine ? Colors.white : Colors.blue,
                             color: toggleLine ? Colors.blue : Colors.white70,
                             onPressed: () {
                               print(
@@ -339,6 +377,10 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                           child: RaisedButton(
                             child: Text(AppLocalizations.of(context).translate('map_btn_center')),//Text('Center'),
                             highlightColor: Color(0xFF42A5F5),
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.blue)),
+                            textColor: Colors.blue,
                             color: Colors.white70,
                             onPressed: () {
                               var bounds = LatLngBounds();
