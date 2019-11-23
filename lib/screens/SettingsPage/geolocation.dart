@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:bus_project/screens/Shared/list.dart';
 import 'package:bus_project/models/Line.dart';
 import 'buses.dart';
+import 'package:background_fetch/background_fetch.dart';
 
 class settings {
   LocationAccuracy ac;
@@ -12,7 +13,7 @@ class settings {
   String di = '';
   String sr = '';
 }
-
+//changed
 class GeoListenPage extends StatefulWidget {
   @override
   _GeoListenPageState createState() => _GeoListenPageState();
@@ -21,7 +22,9 @@ class GeoListenPage extends StatefulWidget {
 class _GeoListenPageState extends State<GeoListenPage> {
   bool condition = false;
   Timer Refresh;
-
+  bool _enabled = true;
+  List<DateTime> _events = [];
+  int _status = 0;
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   settings newSettings = new settings();
@@ -29,6 +32,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     condition = false;
     Timer.periodic(Duration(seconds: 2), (Refresh) {
       if (condition) {
@@ -38,6 +42,45 @@ class _GeoListenPageState extends State<GeoListenPage> {
       }
     });
     GeoPosition.getLocation();
+  }
+
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(BackgroundFetchConfig(
+        minimumFetchInterval: 15,
+        stopOnTerminate: false,
+        enableHeadless: false
+    ), () async {
+      // This is the fetch-event callback.
+      print('[BackgroundFetch] Event received');
+      setState(() {
+        _events.insert(0, new DateTime.now());
+        GeoPosition.sendPositionOnce();
+      });
+      // IMPORTANT:  You must signal completion of your fetch task or the OS can punish your app
+      // for taking too long in the background.
+      BackgroundFetch.finish();
+    }).then((int status) {
+      print('[BackgroundFetch] configure success: $status');
+      setState(() {
+        _status = status;
+      });
+    }).catchError((e) {
+      print('[BackgroundFetch] configure ERROR: $e');
+      setState(() {
+        _status = e;
+      });
+    });
+    // Optionally query the current BackgroundFetch status.
+    int status = await BackgroundFetch.status;
+    setState(() {
+      _status = status;
+    });
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
   void dispose() {
@@ -175,8 +218,16 @@ class _GeoListenPageState extends State<GeoListenPage> {
                         actualStation = null;
                         actualLine = null;
                         DrivingDetector.pauseDrivingDetection();
+                        BackgroundFetch.stop().then((int status) {
+                          print('[BackgroundFetch] stop success: $status');
+                        });
                       } else {
                         MyBusId = newVal;
+                        BackgroundFetch.start().then((int status) {
+                          print('[BackgroundFetch] start success: $status');
+                        }).catchError((e) {
+                          print('[BackgroundFetch] start FAILURE: $e');
+                        });
                         actualLine = line_list.firstWhere((Line l) {
                           return l.LineID.toString() == newVal;
                         });

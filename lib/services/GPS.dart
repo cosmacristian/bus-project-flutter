@@ -146,6 +146,32 @@ class GPS {
     getLocation();
   }
 
+  void sendPositionOnce(){
+    _getLocation().then((position) {
+      userLocation = position;
+      print("/*/*/*/SENDING DATA TO SERVER");
+      if (MyBusId != null && ServerClientDifference !=  null) {
+        var post = {
+          'BusId': MyBusId,
+          'Actual_Latitude': userLocation.latitude,
+          'Actual_Longitude': userLocation.longitude,
+          'Position_Accuracy': userLocation.accuracy,
+          'Actual_Speed': userLocation.speed,
+          'Speed_Accuracy': userLocation.speedAccuracy,
+          'Direction': userLocation.heading,
+          'Acceleration': DrivingDetector.accelerometerValues,
+          'Gyroscope': DrivingDetector.gyroscopeValues,
+          'Timestamp': DateTime.now()
+              .add(ServerClientDifference)
+              .toString()
+              .split(".")[0]
+        };
+        PostBusInformationTest(post);
+        print("/*/*/*/DATA SENT");
+      }
+    });
+  }
+
   void dispose() {
     print("DESTROY GPS DETECTION");
     locationSubscription.cancel();
