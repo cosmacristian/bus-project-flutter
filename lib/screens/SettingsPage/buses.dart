@@ -13,7 +13,7 @@ class BusesScreen extends StatelessWidget {
       ),
       body: Center(
           child: ListView.builder(
-              itemCount: bus_list.length,
+              itemCount: arrivaltime_list.length,
               itemBuilder: (context, index) {
                 return ListTile(
                     leading: new CircleAvatar(

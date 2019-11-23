@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:background_fetch/background_fetch.dart';
 import 'package:bus_project/models/Bus.dart';
 import 'package:bus_project/models/Line.dart';
 import 'package:bus_project/models/Station.dart';
@@ -77,7 +78,7 @@ class GPS {
         if (detected) {
           if (nextStation == null) {
             actualStation = actualLine.Stations.firstWhere((entry s) {
-              return s.StationID == nearbyStations.first.StationId;
+              return s.StationID.toString() == nearbyStations.first.StationId;
             });
             next = actualLine.Stations.indexWhere((entry s) {
               return s.StationID == actualStation.StationID;
@@ -100,7 +101,7 @@ class GPS {
             } else {
               stopwatch.stop();
               actualStation = actualLine.Stations.firstWhere((entry s) {
-                return s.StationID == nearbyStations.first.StationId;
+                return s.StationID.toString() == nearbyStations.first.StationId;
               });
               next = actualLine.Stations.indexWhere((entry s) {
                 return s.StationID == actualStation.StationID;
@@ -151,23 +152,25 @@ class GPS {
       userLocation = position;
       print("/*/*/*/SENDING DATA TO SERVER");
       if (MyBusId != null && ServerClientDifference !=  null) {
-        var post = {
-          'BusId': MyBusId,
-          'Actual_Latitude': userLocation.latitude,
-          'Actual_Longitude': userLocation.longitude,
-          'Position_Accuracy': userLocation.accuracy,
-          'Actual_Speed': userLocation.speed,
-          'Speed_Accuracy': userLocation.speedAccuracy,
-          'Direction': userLocation.heading,
-          'Acceleration': DrivingDetector.accelerometerValues,
-          'Gyroscope': DrivingDetector.gyroscopeValues,
-          'Timestamp': DateTime.now()
-              .add(ServerClientDifference)
-              .toString()
-              .split(".")[0]
-        };
-        PostBusInformationTest(post);
-        print("/*/*/*/DATA SENT");
+        if (DrivingDetector.DrivingScore >= 40) {
+          var post = {
+            'BusId': MyBusId,
+            'Actual_Latitude': userLocation.latitude,
+            'Actual_Longitude': userLocation.longitude,
+            'Position_Accuracy': userLocation.accuracy,
+            'Actual_Speed': userLocation.speed,
+            'Speed_Accuracy': userLocation.speedAccuracy,
+            'Direction': userLocation.heading,
+            'Acceleration': DrivingDetector.accelerometerValues,
+            'Gyroscope': DrivingDetector.gyroscopeValues,
+            'Timestamp': DateTime.now()
+                .add(ServerClientDifference)
+                .toString()
+                .split(".")[0]
+          };
+          PostBusInformationTest(post);
+          print("/*/*/*/DATA SENT");
+        }
       }
     });
   }
@@ -179,6 +182,7 @@ class GPS {
 
   void _showQuestion() {
     // flutter defined function
+    if (MyBusId != null)
     showDialog(
       barrierDismissible: false,
       context: currentContext,
@@ -202,6 +206,9 @@ class GPS {
               onPressed: () {
                 MyBusId = null;
                 questionSent = false;
+                BackgroundFetch.stop().then((int status) {
+                  print('[BackgroundFetch] stop success: $status');
+                });
                 Navigator.of(context).pop();
               },
             ),
