@@ -171,9 +171,14 @@ class _GeoListenPageState extends State<GeoListenPage> {
                     : Text(AppLocalizations.of(context).translate('settings_location')/*"Location:"*/ +
                         GeoPosition.userLocation.latitude.toString() +
                         " " +
-                        GeoPosition.userLocation.longitude.toString()),
+                        GeoPosition.userLocation.longitude.toString(),
+                            style: TextStyle(fontWeight: FontWeight.bold,
+                                             fontStyle: FontStyle.italic,
+                                             fontSize: 20),
+                ),
+
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(top: 38.0),
                   child: RaisedButton(
                     onPressed: () {
                       if (arrivaltime_list != null &&
@@ -192,21 +197,43 @@ class _GeoListenPageState extends State<GeoListenPage> {
                             AppLocalizations.of(context).translate('settings_yesstation_2'));//    " meters away from a station to check for buses.");
                       }
                     },
-                    color: Colors.blue,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.white10)),
+                    color: Colors.white,
                     child: Text(
                       AppLocalizations.of(context).translate('settings_btn_showbus'),//"Show buses",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
+                      ),
                     ),
                   ),
                 ),
-                Text(stationText),
+                new Padding(padding: EdgeInsets.only(top: 20)),
+                Text(stationText,
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold
+                  ),),
+                new Padding(padding: EdgeInsets.only(top: 15)),
                 DrivingDetector.userActivity == null
                     ? CircularProgressIndicator()
                     : Text(
-                    AppLocalizations.of(context).translate('settings_driving_score')+/*"Your phone is to*/" ${DrivingDetector.userActivity.confidence}% ${DrivingDetector.userActivity.type}! Driving Score= ${DrivingDetector.DrivingScore}"),
+                    AppLocalizations.of(context).translate('settings_driving_score')+/*"Your phone is to*/" ${DrivingDetector.userActivity.confidence}% ${DrivingDetector.userActivity.type}! Driving Score= ${DrivingDetector.DrivingScore}",
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold
+                    ),),
+                new Padding(padding: EdgeInsets.only(top: 15)),
                 MyBusId == null
                     ? Text(AppLocalizations.of(context).translate('settings_select_bus'))//Text("Please select the bus you are traveling with:")
-                    : Text(AppLocalizations.of(context).translate('settings_selected_bus')/*"Your bus is:"*/ + MyBusId),
+                    : Text(AppLocalizations.of(context).translate('settings_selected_bus')/*"Your bus is:"*/ + MyBusId,
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold
+                        ),),
                 new DropdownButton<String>(
                   value: MyBusId == null ? 'Off' : MyBusId,
                   items: list.reversed.toList(),
@@ -244,6 +271,11 @@ class _GeoListenPageState extends State<GeoListenPage> {
                     children: <Widget>[
                       DropdownButton<LocationAccuracy>(
                         value: GeoPosition.accuracy,
+                        style: new TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 15,
+                          color: Colors.black
+                        ),
                         items: [
                           DropdownMenuItem<LocationAccuracy>(
                               value: LocationAccuracy.bestForNavigation,
@@ -270,9 +302,23 @@ class _GeoListenPageState extends State<GeoListenPage> {
                           });
                         },
                       ),
+                      new Padding(padding: EdgeInsets.only(top: 20)),
                       TextFormField(
                         decoration: new InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('settings_tff_interval')),//"Interval in seconds"),
+                            labelText: AppLocalizations.of(context).translate('settings_tff_interval'),
+                            labelStyle: TextStyle(
+                              color: Colors.blue
+                            ),
+                            fillColor: Colors.blue,
+                            border: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: new BorderSide(),
+                            ),
+                            enabledBorder: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: BorderSide(color: Colors.blue, width: 0.5)
+                            ),
+                        ),//"Interval in seconds"),
                         //controller: IntervalController,
                         keyboardType: TextInputType.number,
                         initialValue: GeoPosition.timeInt.toString(),
@@ -283,12 +329,30 @@ class _GeoListenPageState extends State<GeoListenPage> {
                           return null;
                         },
                         onSaved: (val) => newSettings.tm = val,
+                        style: new TextStyle(
+                          fontFamily: "Poppins",
+                        ),
                       ),
+                      new Padding(padding: EdgeInsets.only(top: 20)),
                       TextFormField(
                         decoration: new InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('settings_tff_distance')),//"Distance in meters"),
+                            labelText: AppLocalizations.of(context).translate('settings_tff_distance'),
+                            labelStyle: TextStyle(
+                              color: Colors.blue
+                            ),
+                            fillColor: Colors.blue,
+                            border: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: new BorderSide(),
+                            ),
+                            enabledBorder: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: BorderSide(color: Colors.blue, width: 0.5)
+                            ),
+                        ),//"Distance in meters"),
                         //controller: DistanceController,
                         keyboardType: TextInputType.number,
+                        cursorColor: Colors.blue,
                         initialValue: GeoPosition.distance.toString(),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -298,9 +362,23 @@ class _GeoListenPageState extends State<GeoListenPage> {
                         },
                         onSaved: (val) => newSettings.di = val,
                       ),
+                      new Padding(padding: EdgeInsets.only(top: 20)),
                       TextFormField(
                         decoration: new InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('settings_tff_stationrange')),//"Station detection distance in meters"),
+                            labelText: AppLocalizations.of(context).translate('settings_tff_stationrange'),
+                            labelStyle: TextStyle(
+                              color: Colors.blue
+                            ),
+                            fillColor: Colors.blue,
+                            border: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(40.0),
+                              borderSide: new BorderSide(),
+                            ),
+                            enabledBorder: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(25.0),
+                                borderSide: BorderSide(color: Colors.blue, width: 0.5)
+                            ),
+                        ),//"Station detection distance in meters"),
                         //controller: DistanceController,
                         keyboardType: TextInputType.number,
                         initialValue: (range * 1000).toString(),
@@ -313,8 +391,14 @@ class _GeoListenPageState extends State<GeoListenPage> {
                         onSaved: (val) => newSettings.sr = val,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.only(top: 60.0),
                         child: RaisedButton(
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)),
+                          color: Colors.blue,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.all(8.0),
                           onPressed: _submitForm,
                           /*() {
                         // Validate returns true if the form is valid, or false
@@ -324,7 +408,8 @@ class _GeoListenPageState extends State<GeoListenPage> {
                             //timeInt=IntervalController.text as int;
                           }
                         },*/
-                          child: Text(AppLocalizations.of(context).translate('settings_from_save')),//Text('Save Settings'),
+                          child: Text(AppLocalizations.of(context).translate('settings_from_save').toUpperCase(),
+                          style: TextStyle(fontStyle: FontStyle.italic),),//Text('Save Settings'),
                         ),
                       ),
                     ],
