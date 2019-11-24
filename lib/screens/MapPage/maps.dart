@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:bus_project/screens/BusListPage/bus_list.dart';
 import 'package:bus_project/services/communication.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../Shared/list.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -137,7 +138,10 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
           point: new LatLng(Bus.Actual_Latitude, Bus.Actual_Longitude),
           builder: (ctx) => Container(
             key: Key('purple'),
-            child: FlutterLogo(colors: Colors.purple),
+            child: Icon(
+              MdiIcons.bus,
+              color: Colors.black,
+            ),
           ),
         );
       }).toList();
@@ -152,7 +156,10 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
               GeoPosition.userLocation.longitude),
           /*double.parse(latitude()), double.parse(longitude())),*/
           builder: (ctx) => new Container(
-            child: FlutterLogo(),
+            child: Icon(
+              MdiIcons.mapMarker,
+              color: Colors.blueGrey
+            ),
           ),
         ));
         circleMarkers = <CircleMarker>[
@@ -179,7 +186,10 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
           point: new LatLng(Station.Latitude, Station.Longitude),
           builder: (ctx) => Container(
             key: Key('green'),
-            child: FlutterLogo(colors: Colors.green),
+            child: Icon(
+              MdiIcons.mapMarker,
+              color: Colors.black,
+            ),
           ),
         );
       }).toList();
@@ -191,7 +201,10 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
           point: new LatLng(GeoPosition.userLocation.latitude,
               GeoPosition.userLocation.longitude),
           builder: (ctx) => new Container(
-            child: FlutterLogo(),
+            child: Icon(
+              MdiIcons.mapMarker,
+              color: Colors.blueGrey,
+            ),
           ),
         ));
         circleMarkers = <CircleMarker>[
