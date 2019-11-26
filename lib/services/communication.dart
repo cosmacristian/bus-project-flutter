@@ -134,7 +134,7 @@ void PostBusInformation(Map body) async {
 void PostBusInformationTest(Map body) async {
   return http
       .post(
-          "http://193.226.0.198:5210/WCFService/Service1/web/PostCarMeasurement",
+          "http://193.226.0.198:5210/WCFService/Service1/web/PostBusMeasurement",
           headers: {"Content-Type": "application/json"},
           body: json.encode(body))
       .then((http.Response response) {

@@ -23,6 +23,7 @@ class Maps extends StatefulWidget {
 }
 
 class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Todo todo;
   List<Marker> markers;
   List<Polyline> polylines;
@@ -107,7 +108,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
     //print(temp3);
     //temp3.removeWhere((value) => value == null);
     print(temp3);
-    return Polyline(points: temp3, strokeWidth: 4.0, color: Colors.purple);
+    return Polyline(points: temp3, strokeWidth: 4.0, color: Colors.blue);
   }
 
 /*
@@ -138,10 +139,12 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
           point: new LatLng(Bus.Actual_Latitude, Bus.Actual_Longitude),
           builder: (ctx) => Container(
             key: Key('purple'),
-            child: Icon(
-              MdiIcons.bus,
-              color: Colors.black,
-            ),
+            child:  new CircleAvatar(
+                child:
+                new Text(Bus.BusId)),//Icon(
+              //MdiIcons.bus,
+              //color: Colors.black,
+            //),
           ),
         );
       }).toList();
@@ -181,16 +184,34 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
     if (station_list != null) {
       temp2 = station_list.map((Station) {
         return Marker(
-          width: 30.0,
-          height: 30.0,
+          width: 40.0,
+          height: 40.0,
           point: new LatLng(Station.Latitude, Station.Longitude),
           builder: (ctx) => Container(
             key: Key('green'),
-            child: Icon(
+            child: IconButton(
+                icon: Icon( MdiIcons.mapMarker,
+                  color: Colors.black,
+                  size: 40.0,),
+                //color: Colors.white,
+                onPressed: () { Scaffold.of(currentContext).showSnackBar(new SnackBar(//_scaffoldKey.currentState.showSnackBar(SnackBar(
+                  content: Text(Station.StationName),
+                ));}
+            )
+            /*GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                child:FlutterLogo(colors: Colors.purple),/*Icon(
               MdiIcons.mapMarker,
               color: Colors.black,
-            ),
-          ),
+              size: 40.0,
+              ),*/
+              onTap: () {
+                print("Tapped!");
+                Scaffold.of(currentContext).showSnackBar(new SnackBar(//_scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text(Station.StationName),
+              ));
+            },
+          ),*/),
         );
       }).toList();
 
@@ -451,7 +472,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
                           },
                         ),
                         SwitchLayers(),
-                        CircleLayerOptions(circles: circleMarkers),
+                        //CircleLayerOptions(circles: circleMarkers),
                       ],
                     ),
                   ),
