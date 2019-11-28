@@ -17,7 +17,7 @@
   "settings_yesstation_2": "méterre állhat egy buszmegállótól, hogy böngésszen buszokat.",
   "settings_btn_showbus": "Mutasd a Buszokat",
   "settings_driving_score": "Az ön eszköze",
-  "settings_select_bus": "Kérem válassza ki melyik buszal utazik:",
+  "settings_select_bus": "Válasszon egy buszt, amellyel utazni szeretne",
   "settings_selected_bus": "Az ön busza:",
   "settings_select_accuracy_best": "Legjobb pontosság",
   "settings_select_accuracy_high": "Jó pontosság",
@@ -37,5 +37,11 @@
   "gps_stop_location_stop": "Megállít",
   "location_service_title": "Helymeghatározás inaktív!",
   "location_service_msg": "Kérem bizonyosodjon meg róla, hogy a helymeghatározás be van kapcsolva.",
-  "ok": "Ok"
+  "ok": "Ok",
+  "fab_stop_journey": "Utazás befejezése",
+  "bus_list_show_map": "Látsd a térképen!",
+  "bus_list_start_title": "Helymegosztás a következő busznak: ",
+  "bus_list_start_msg": "Ön a következő vonalon utazik: ",
+  "nope": "Mégsem",
+  "yes": "Igen"
 }

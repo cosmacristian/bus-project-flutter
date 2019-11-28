@@ -17,7 +17,7 @@
   "settings_yesstation_2": "metri departe de o stație puteți căuta autobuzuri.",
   "settings_btn_showbus": "Arată autobuzurile",
   "settings_driving_score": "Telefonul dumneavoastră",
-  "settings_select_bus": "Vărog alegeți autobuzul cu care călătoriți:",
+  "settings_select_bus": "Selectați un autobuz cu care doriți să călătoriți",
   "settings_selected_bus": "Autobuzul dumneavoastră:",
   "settings_select_accuracy_best": "Cea mai bună precizie",
   "settings_select_accuracy_high": "Precizie bună",
@@ -37,5 +37,11 @@
   "gps_stop_location_stop": "Oprește",
   "location_service_title": "Serviciul de localizare este oprită!",
   "location_service_msg": "Vărog asigurați-vă ca serviciul de localizare să fie pornită.",
-  "ok": "Ok"
+  "ok": "Ok",
+  "fab_stop_journey": "Termină-ți călătoria",
+  "bus_list_show_map": "Vedeți-l pe hartă!",
+  "bus_list_start_title": "Distribuie locație pentru autobuzul: ",
+  "bus_list_start_msg": "Călătoriți cu linia: ",
+  "nope": "Nu",
+  "yes": "Da"
 }

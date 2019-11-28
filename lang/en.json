@@ -17,7 +17,7 @@
   "settings_yesstation_2": "meters away from a station to check for buses.",
   "settings_btn_showbus": "Show buses",
   "settings_driving_score": "Your phone is to",
-  "settings_select_bus": "Please select the bus you are traveling with:",
+  "settings_select_bus": "Please select a bus you wish to travel with",
   "settings_selected_bus": "Your bus is:",
   "settings_select_accuracy_best": "Best accuracy",
   "settings_select_accuracy_high": "High accuracy",
@@ -37,5 +37,11 @@
   "gps_stop_location_stop": "Stop",
   "location_service_title": "Location service is offline!",
   "location_service_msg": "Please make sure you have enabled the Location Services on your phone",
-  "ok": "Ok"
+  "ok": "Ok",
+  "fab_stop_journey": "End Journey",
+  "bus_list_show_map": "See it on the map!",
+  "bus_list_start_title": "Start location share for bus: ",
+  "bus_list_start_msg": "Are you travelling with on line: ",
+  "nope": "No",
+  "yes": "Yes"
 }

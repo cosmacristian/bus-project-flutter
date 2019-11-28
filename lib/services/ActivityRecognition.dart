@@ -13,8 +13,9 @@ class ActivityRecognition {
   List<double> gyroscopeValues;
   List<double> userAccelerometerValues;
   List<StreamSubscription> streamSubscriptions;
-  int DrivingScore = 100;
+  int DrivingScore = 0;
   Timer DrivingCheck;
+  bool isStarted = false;
 
   ActivityRecognition._internal() {
     print("CREATE DRIVING DETECTION");
@@ -37,6 +38,7 @@ class ActivityRecognition {
 
   void startDrivingDetection() {
     print("START DRIVING DETECTION");
+    isStarted = true;
     if (active != null) {
       if (activeSubscription != null) {
         if (activeSubscription.isPaused) {
@@ -84,6 +86,7 @@ class ActivityRecognition {
   }
 
   void pauseDrivingDetection() {
+    isStarted = false;
     print("PAUSE DRIVING DETECTION");
     DrivingCheck.cancel();
     activeSubscription.pause();
