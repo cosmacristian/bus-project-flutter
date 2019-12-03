@@ -101,6 +101,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
   @override
   Widget build(BuildContext context) {
     currentContext = context;
+    /*
     var list = businfo_list.map((var value) {
       return new DropdownMenuItem<String>(
         value: value.BusId,
@@ -110,7 +111,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
     list.add(new DropdownMenuItem<String>(
       value: 'Off',
       child: new Text(AppLocalizations.of(context).translate('off')),//Text('Off'),
-    ));
+    ));*/
     return /*Scaffold(
             body: Center(
                 child:*/
@@ -185,7 +186,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                       fontWeight: FontWeight.bold
                     ),),
                 new Padding(padding: EdgeInsets.only(top: 15)),
-                new DropdownButton<String>(
+                /*new DropdownButton<String>(
                   value: MyBusId == null ? 'Off' : MyBusId,
                   items: list.reversed.toList(),
                   onChanged: (newVal) {
@@ -217,7 +218,7 @@ class _GeoListenPageState extends State<GeoListenPage> {
                       }
                     });
                   },
-                ),
+                ),*/
                 Form(
                   key: _formKey,
                   autovalidate: true,

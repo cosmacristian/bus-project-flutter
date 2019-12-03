@@ -2,6 +2,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:bus_project/models/Bus.dart';
 import 'package:bus_project/models/BusInfo.dart';
 import 'package:bus_project/models/Line.dart';
+import 'package:bus_project/screens/Shared/start.dart';
 import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:bus_project/services/AppPropertiesBLoC.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +126,8 @@ class _BusListActionListener extends State<Buslist1> {
                 ),
                 child: ListTile(
                   leading: new CircleAvatar(
+                      foregroundColor: Colors.white,
+                      backgroundColor: (item.BusId == MyBusId)?Colors.red:Colors.blue,
                       child: new Text(businfo_list.elementAt(index).BusId)),
                   title: Text(businfo_list.elementAt(index).BusName),
                   trailing: Icon(Icons.keyboard_arrow_right),
@@ -175,12 +178,13 @@ class _BusListActionListener extends State<Buslist1> {
                   });
                   actualLine = line_list.firstWhere((Line l) {
                     return l.LineID.toString() == busId;
-                  });
+                  }, orElse: () => null);
                   if (!DrivingDetector.isStarted)
                     DrivingDetector.startDrivingDetection();
                   appBloc.updateTitle();
                   appBloc.updateFab();
                   Navigator.of(context).pop();
+                  tabController.animateTo(1);
                 });
               },
             ),

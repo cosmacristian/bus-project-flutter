@@ -8,14 +8,14 @@ import 'package:bus_project/screens/BusListPage/bus_list.dart';
 
 import 'list.dart';
 
-
+TabController tabController;
 class start extends StatefulWidget {
   @override
   _newBar createState() => new _newBar();
 }
 
 class _newBar extends State<start> with SingleTickerProviderStateMixin {
-  TabController tabController;
+
   bool _enabled = true;
   List<DateTime> _events = [];
   int _status = 0;

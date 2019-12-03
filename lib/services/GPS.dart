@@ -9,6 +9,7 @@ import 'package:bus_project/services/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
+import 'AppPropertiesBLoC.dart';
 import 'communication.dart';
 
 class GPS {
@@ -206,6 +207,12 @@ class GPS {
               onPressed: () {
                 MyBusId = null;
                 questionSent = false;
+                nextStation = null;
+                actualStation = null;
+                actualLine = null;
+                DrivingDetector.pauseDrivingDetection();
+                appBloc.updateTitle();
+                appBloc.updateFab();
                 BackgroundFetch.stop().then((int status) {
                   print('[BackgroundFetch] stop success: $status');
                 });

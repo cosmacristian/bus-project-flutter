@@ -3,19 +3,23 @@ class Bus {
   double Actual_Latitude;
   double Actual_Longitude;
   String Measurement_Timestamp;
+  int Points_nearby;
 
   Bus(
       {this.BusId,
       this.Actual_Latitude,
       this.Actual_Longitude,
-      this.Measurement_Timestamp});
+      this.Measurement_Timestamp,
+      this.Points_nearby});
 
   factory Bus.fromJson(Map<String, dynamic> json) {
     return new Bus(
         BusId: json['BusId'].toString(),
         Actual_Longitude: json['Actual_Longitude'].toDouble(),
         Actual_Latitude: json['Actual_Latitude'].toDouble(),
-        Measurement_Timestamp: json['Measurement_Timestamp'].toString());
+        Measurement_Timestamp: json['Measurement_Timestamp'].toString(),
+        Points_nearby: json['Points_nearby']
+    );
   }
 
   @override
