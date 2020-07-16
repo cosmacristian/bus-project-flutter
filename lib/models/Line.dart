@@ -23,7 +23,7 @@ class LineListPost {
 }
 
 class Line{
-  int LineID;
+  String LineID;
   List<entry> Stations;
 
   Line({this.LineID,this.Stations});

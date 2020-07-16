@@ -65,7 +65,7 @@ class Maps_flutter extends State<Maps> with TickerProviderStateMixin {
     if(selectedBusId != "Off") {
       if (line_list != null) {
         line =
-            line_list.singleWhere((o) => o.LineID.toString() == selectedBusId,
+            line_list.singleWhere((o) => o.LineID == selectedBusId,
                 orElse: () => null);
         if (line != null && line.Stations.length != 0) {
           List<Timetable> tt = timetable.where((o) => o.busNr == selectedBusId).toList();

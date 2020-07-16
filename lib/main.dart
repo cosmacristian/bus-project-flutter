@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Tutorials',
+      title: 'Where is my bus',
       supportedLocales: [
         Locale('en', 'US'),
         Locale('hu', 'HU'),

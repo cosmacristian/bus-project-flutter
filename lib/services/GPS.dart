@@ -22,7 +22,7 @@ class GPS {
   Position userLocation;
   LocationAccuracy accuracy = LocationAccuracy.bestForNavigation;
   int timeInt = 30000;
-  int distance = 2;
+  int distance = 1;
   bool questionSent = false;
 
   GPS._internal() {
@@ -77,7 +77,7 @@ class GPS {
 
       if (MyBusId != null) {
         if (detected) {
-          if (nextStation == null) {
+          /*if (nextStation == null) {
             actualStation = actualLine.Stations.firstWhere((entry s) {
               return s.StationID.toString() == nearbyStations.first.StationId;
             });
@@ -112,7 +112,7 @@ class GPS {
               stopwatch.reset();
               stopwatch.start();
             }
-          }
+          }*/
         }
         if (DrivingDetector.DrivingScore >= 40) {
           var post = {
